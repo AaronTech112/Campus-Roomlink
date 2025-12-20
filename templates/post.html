@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="post-screen" class="screen-page">
+    <div class="post-container">
+        <h2>Post a Listing</h2>
+        <p>What are you looking for?</p>
+        
+        <form method="POST" action="{% url 'post_listing' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Listing Type</label>
+                <div class="segment-control">
+                    <input type="radio" name="type" id="type-house" value="house" checked>
+                    <label for="type-house">House</label>
+                    
+                    <input type="radio" name="type" id="type-roommate" value="roommate">
+                    <label for="type-roommate">Roommate</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Price / Budget (₦)</label>
+                <input type="number" name="price" placeholder="e.g. 150000" required>
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" name="location" placeholder="e.g. Yaba, Akoka" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" placeholder="Describe the place or yourself..." rows="4"></textarea>
+            </div>
+
+            <!-- Image Upload Placeholder -->
+            <div class="form-group">
+                <label>Photos</label>
+                <input type="file" name="images" multiple accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Post Listing</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

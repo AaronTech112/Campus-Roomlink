@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="profile-screen" class="screen-page">
+    <div class="profile-header">
+        <div class="avatar-large">
+            <!-- In real app: {{ user.profile.avatar.url }} -->
+            <img src="https://ui-avatars.com/api/?name={{ user.username|default:'Student User' }}&background=2563EB&color=fff" alt="User">
+        </div>
+        <h3>{{ user.username|default:"Student User" }}</h3>
+        
+        {% if user.profile.is_verified %}
+        <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Student</span>
+        {% else %}
+        <span class="badge" style="background:#f1f5f9; color:#64748B;">Unverified</span>
+        {% endif %}
+    </div>
+
+    <div class="profile-menu">
+        <a href="{% url 'my_listings' %}" class="menu-item text-decoration-none">
+            <i class="ph ph-house"></i> My Listings
+        </a>
+        <a href="{% url 'settings' %}" class="menu-item text-decoration-none">
+            <i class="ph ph-gear"></i> Settings
+        </a>
+        <a href="{% url 'logout' %}" class="menu-item text-danger text-decoration-none">
+            <i class="ph ph-sign-out"></i> Logout
+        </a>
+    </div>
+</section>
+{% endblock %}

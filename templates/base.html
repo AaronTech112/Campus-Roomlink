@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RoomLink</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Using Phosphor Icons for modern app-like icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <!-- Main App Container -->
+    <main id="app">
+        
+        <!-- HEADER (Shared across all pages) -->
+        <header class="app-header" id="app-header">
+            <div class="logo-container">
+                <!-- Assuming logo.png is also in static/img in a real app, but for now referencing relative or root -->
+                <!-- Ideally in Django: {% static 'img/logo.png' %} -->
+                <img src="{% static 'images/logo.png' %}" alt="RoomLink Logo" class="app-logo">
+                <span class="app-name">RoomLink</span> 
+            </div>
+            <!-- Dynamic Actions Block -->
+            <div id="header-actions">
+                {% block header_actions %}{% endblock %}
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="{% url 'home' %}" class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <i class="ph ph-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'houses' %}" class="nav-item {% if request.resolver_match.url_name == 'houses' %}active{% endif %}">
+            <i class="ph ph-buildings"></i>
+            <span>Houses</span>
+        </a>
+        <a href="{% url 'post' %}" class="nav-item {% if request.resolver_match.url_name == 'post' %}active{% endif %}">
+            <div class="nav-fab">
+                <i class="ph ph-plus"></i>
+            </div>
+            <span>Post</span>
+        </a>
+        <a href="{% url 'roommates' %}" class="nav-item {% if request.resolver_match.url_name == 'roommates' %}active{% endif %}">
+            <i class="ph ph-users"></i>
+            <span>Roomies</span>
+        </a>
+        <a href="{% url 'profile' %}" class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <i class="ph ph-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Toast Notification Container -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast show">{{ message }}</div>
+        {% endfor %}
+    {% else %}
+        <div id="toast" class="toast hidden"></div>
+    {% endif %}
+
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

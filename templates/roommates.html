@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="roommates-screen" class="screen-page">
+    <div class="filter-bar">
+        <div class="search-input">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" placeholder="Search by lifestyle, budget..." name="q" value="{{ request.GET.q }}">
+        </div>
+    </div>
+    
+    <div class="roommates-list" id="roommates-list">
+        {% for roomie in roommates %}
+        <div class="roommate-card">
+            <img src="{{ roomie.avatar }}" class="roommate-avatar" alt="{{ roomie.name }}">
+            <div class="roommate-info">
+                <h3>{{ roomie.name }}</h3>
+                <p style="font-size:0.85rem; color:var(--primary); font-weight:500;">Budget: {{ roomie.budget }}</p>
+                <p style="font-size:0.8rem; margin-bottom:6px;">Looking in: {{ roomie.location }}</p>
+                <div class="tags">
+                    {% for tag in roomie.tags %}
+                    <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <a href="https://wa.me/?text=Hello {{ roomie.name }}, saw your profile on RoomLink!" target="_blank" class="btn-icon" style="color:#25D366; border-color:#25D366;">
+                <i class="ph-fill ph-whatsapp-logo"></i>
+            </a>
+        </div>
+        {% empty %}
+        <p>No roommates found.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

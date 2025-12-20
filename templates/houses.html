@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header_actions %}
+<button class="btn-icon" onclick="openModal('filter-modal')">
+    <i class="ph ph-sliders-horizontal"></i>
+</button>
+{% endblock %}
+
+{% block content %}
+<section id="houses-screen" class="screen-page">
+    <div class="filter-bar">
+        <div class="search-input">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" placeholder="Search location..." name="q" value="{{ request.GET.q }}">
+        </div>
+    </div>
+    
+    <div class="listings-grid" id="houses-list">
+        {% for house in houses %}
+        <a href="{% url 'listing_detail' house.id %}" class="card-link">
+            <div class="card">
+                <img src="{{ house.image }}" class="card-image" alt="{{ house.title }}">
+                <div class="card-content">
+                    <div style="display:flex;justify-content:space-between;align-items:start;">
+                        <div class="card-price">₦{{ house.price }}</div>
+                        <small>{{ house.distance }} to campus</small>
+                    </div>
+                    <h3 style="font-size:1rem;margin:4px 0;">{{ house.title }}</h3>
+                    <div class="card-meta"><i class="ph ph-map-pin"></i> {{ house.location }}</div>
+                    <div style="margin-top:8px; display:flex; gap:8px;">
+                        {% if house.verified %}
+                        <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified</span>
+                        {% endif %}
+                        <span class="badge" style="background:#f1f5f9;">{{ house.type }}</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p>No houses found matching your criteria.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Filter Modal (Client-side interaction, triggers GET param reload or JS filter) -->
+<div id="filter-modal" class="modal">
+    <div class="modal-content slide-up">
+        <div class="modal-header">
+            <h3>Filters</h3>
+            <button class="btn-icon" onclick="closeModal('filter-modal')"><i class="ph ph-x"></i></button>
+        </div>
+        <form method="GET" action="{% url 'houses' %}">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Budget Range</label>
+                    <input type="range" name="budget" min="50000" max="1000000" step="10000" value="{{ request.GET.budget }}">
+                </div>
+                <div class="form-group">
+                    <label>Distance to Campus</label>
+                    <div class="chips">
+                        <!-- Simplified for MVP structure - in real Django these would be inputs/labels -->
+                        <label class="chip-label">
+                            <input type="radio" name="distance" value="1" class="hidden-radio">
+                            <span class="chip"> < 1km </span>
+                        </label>
+                        <label class="chip-label">
+                            <input type="radio" name="distance" value="5" class="hidden-radio">
+                            <span class="chip"> < 5km </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+    <div class="modal-backdrop" onclick="closeModal('filter-modal')"></div>
+</div>
+{% endblock %}

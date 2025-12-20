@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="home-screen" class="screen-page">
+    <div class="hero">
+        <h1>Find off-campus houses & roommates around your campus</h1>
+        <p class="trust-note"><i class="ph-fill ph-shield-check"></i> Built for students • Verified listings</p>
+        
+        <div class="hero-actions">
+            <a href="{% url 'houses' %}" class="btn btn-primary btn-large text-decoration-none">
+                <i class="ph ph-house-line"></i> Find a House
+            </a>
+            <a href="{% url 'roommates' %}" class="btn btn-secondary btn-large text-decoration-none">
+                <i class="ph ph-users"></i> Find a Roommate
+            </a>
+        </div>
+    </div>
+
+    <div class="featured-section">
+        <div class="section-header">
+            <h2>New Listings</h2>
+            <a href="{% url 'houses' %}" class="btn-link">See all</a>
+        </div>
+        <div class="horizontal-scroll" id="home-featured-list">
+            
+            <!-- Django Loop for Featured Listings -->
+            {% for house in featured_houses %}
+            <a href="{% url 'listing_detail' house.id %}" class="card-link">
+                <div class="card">
+                    <img src="{{ house.image }}" class="card-image" alt="{{ house.title }}">
+                    <div class="card-content">
+                        <div class="card-price">₦{{ house.price }}</div>
+                        <div class="card-meta">{{ house.type }} • {{ house.location }}</div>
+                        <div style="margin-top:8px;">
+                            {% if house.verified %}
+                            <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified</span>
+                            {% endif %}
+                            {% if house.is_new %}
+                            <span class="badge badge-new">New</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <!-- Skeleton/Empty State if no data (mocking skeletons for now) -->
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+{% endblock %}

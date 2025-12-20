@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="listing-detail-screen" class="screen-page">
+    <div class="detail-container">
+        <!-- Back Button logic would normally be history.back() or link to category -->
+        <div class="modal-header">
+            <h3>Listing Details</h3>
+            <a href="javascript:history.back()" class="btn-icon"><i class="ph ph-arrow-left"></i></a>
+        </div>
+        
+        <img src="{{ house.image }}" style="width:100%; height:250px; object-fit:cover; border-radius:12px; margin-bottom:16px;" alt="{{ house.title }}">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h2 style="margin:0; color:var(--primary);">₦{{ house.price }}/yr</h2>
+            {% if house.verified %}
+            <span class="badge badge-verified">Verified Listing</span>
+            {% endif %}
+        </div>
+        
+        <h3 style="margin-bottom:8px;">{{ house.title }}</h3>
+        <p style="margin-bottom:16px;"><i class="ph ph-map-pin"></i> {{ house.location }} ({{ house.distance }} from campus)</p>
+        
+        <div style="background:#F8FAFC; padding:16px; border-radius:12px; margin-bottom:20px;">
+            <h4 style="margin-bottom:8px;">Features</h4>
+            <div class="tags">
+                <span class="tag">Water Running</span>
+                <span class="tag">Security</span>
+                <span class="tag">Tiled Floor</span>
+                <span class="tag">{{ house.type }}</span>
+            </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <h4 style="margin-bottom:8px;">Description</h4>
+            <p>{{ house.description|default:"No description provided." }}</p>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-bottom: 80px;"> <!-- Margin bottom for sticky nav -->
+            <a href="tel:{{ house.agent_phone }}" class="btn btn-secondary" style="flex:1;"><i class="ph ph-phone"></i> Call Agent</a>
+            <a href="https://wa.me/?text=Hi, I am interested in {{ house.title }}" target="_blank" class="btn btn-primary" style="flex:1; background-color:#25D366; border:none;"><i class="ph-fill ph-whatsapp-logo"></i> WhatsApp</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
