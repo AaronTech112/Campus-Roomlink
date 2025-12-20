@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Listing, User
-from .forms import SignupForm, LoginForm, ListingForm, VerificationForm
+from .forms import SignupForm, LoginForm, ListingForm, VerificationForm, ProfileUpdateForm
 from django.db.models import Case, When, Value, IntegerField
 
 # --- Public Views ---
@@ -178,5 +178,13 @@ def delete_listing(request, id):
 
 @login_required
 def settings(request):
-    # Placeholder
-    return redirect('profile')
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully.")
+            return redirect('settings')
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+    
+    return render(request, 'settings.html', {'form': form})

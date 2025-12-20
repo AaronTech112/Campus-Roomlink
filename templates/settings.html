@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="settings-screen" class="screen-page">
+    <div class="screen-header">
+        <a href="{% url 'profile' %}" class="back-btn"><i class="ph ph-arrow-left"></i></a>
+        <h2>Settings</h2>
+    </div>
+
+    <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div class="card" style="padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); background: #fff;">
+            <h3 style="margin-bottom: 16px; font-size: 1.25rem;">Edit Profile</h3>
+            
+            <form method="POST" action="{% url 'settings' %}">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 6px; font-weight: 500;">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div style="color: red; font-size: 0.85rem; margin-top: 4px;">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+
+        <div class="card" style="padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); background: #fff; margin-top: 24px;">
+            <h3 style="margin-bottom: 16px; font-size: 1.25rem;">Security</h3>
+            <!-- Placeholder for Password Change - could link to a password change view if implemented -->
+            <button class="btn btn-secondary" style="width: 100%; margin-bottom: 12px;" disabled>
+                Change Password (Coming Soon)
+            </button>
+            
+            <hr style="margin: 16px 0; border: 0; border-top: 1px solid #eee;">
+            
+            <h4 style="color: #DC2626; font-size: 1rem; margin-bottom: 8px;">Danger Zone</h4>
+            <button class="btn" style="width: 100%; background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA;" onclick="alert('Account deletion is not yet implemented.')">
+                Delete Account
+            </button>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Reuse form styles from other pages if possible, or define here */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+</style>
+{% endblock %}

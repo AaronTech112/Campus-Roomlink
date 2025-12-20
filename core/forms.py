@@ -41,6 +41,11 @@ class VerificationForm(forms.ModelForm):
             'verification_document': forms.FileInput(attrs={'accept': '.pdf,.jpg,.jpeg,.png'})
         }
 
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['full_name', 'email', 'phone_number']
+        
 class ListingForm(forms.ModelForm):
     title = forms.CharField(required=False) # Make title optional as it's not needed for Roommate requests
 
