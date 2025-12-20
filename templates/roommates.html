@@ -28,7 +28,7 @@
                     {% if roomie.posted_by.department %} • {{ roomie.posted_by.department }}{% endif %}
                 </p>
 
-                <p style="font-size:0.85rem; color:var(--primary); font-weight:500;">Budget: ₦{{ roomie.rent|intcomma }}</p>
+                <p style="font-size:0.85rem; color:var(--primary); font-weight:500;">Budget: ₦{{ roomie.rent|intcomma }} <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(50% Share)</span></p>
                 <p style="font-size:0.8rem; margin-bottom:6px;">Location: {{ roomie.location }}</p>
                 
                 {% if roomie.interests_list %}
@@ -43,10 +43,6 @@
                 {% endif %}
                 
                 <div style="margin-top:4px; display:flex; gap:4px; flex-wrap:wrap;">
-                     {% if roomie.is_verified_listing %}
-                     <span class="badge badge-verified" style="font-size:0.7rem;"><i class="ph-fill ph-seal-check"></i> Verified</span>
-                     {% endif %}
-
                      {% if roomie.posted_by.is_verified_student %}
                      <span class="badge" style="background:#e0f2fe; color:#0284c7; font-size:0.7rem;"><i class="ph-fill ph-student"></i> Verified Student</span>
                      {% else %}

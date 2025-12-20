@@ -45,19 +45,34 @@
                     </div>
                     {% endif %}
                     <div class="card-content">
-                        <div class="card-price">₦{{ house.rent|intcomma }}</div>
+                        <div class="card-price">
+                            ₦{{ house.rent|intcomma }}
+                            {% if house.listing_type == 'roommate' %}
+                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(50% Share)</span>
+                            {% endif %}
+                        </div>
                         <div class="card-meta">{{ house.get_listing_type_display }} • {{ house.location }}</div>
                         <div style="margin-top:8px; display:flex; gap:4px; flex-wrap:wrap;">
-                            {% if house.is_verified_listing %}
-                            <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
+                            {% if house.listing_type == 'roommate' %}
+                                <!-- Roommate: Show ONLY User Status -->
+                                {% if house.posted_by.is_verified_student %}
+                                <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Verified Student</span>
+                                {% else %}
+                                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+                                {% endif %}
                             {% else %}
-                            <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified Listing</span>
-                            {% endif %}
-                            
-                            {% if house.posted_by.is_verified_student %}
-                            <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Verified Student</span>
-                            {% else %}
-                            <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+                                <!-- House: Show Both Statuses -->
+                                {% if house.is_verified_listing %}
+                                <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
+                                {% else %}
+                                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified Listing</span>
+                                {% endif %}
+                                
+                                {% if house.posted_by.is_verified_student %}
+                                <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Verified Student</span>
+                                {% else %}
+                                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>

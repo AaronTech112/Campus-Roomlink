@@ -95,6 +95,7 @@ class Listing(models.Model):
     
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
     is_verified_listing = models.BooleanField(default=False)
+    views_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

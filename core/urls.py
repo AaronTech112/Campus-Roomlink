@@ -21,5 +21,7 @@ urlpatterns = [
     path('upload-verification/', views.upload_verification, name='upload_verification'),
     
     path('my-listings/', views.my_listings, name='my_listings'),
+    path('my-listings/edit/<int:id>/', views.edit_listing, name='edit_listing'),
+    path('my-listings/delete/<int:id>/', views.delete_listing, name='delete_listing'),
     path('settings/', views.settings, name='settings'),
 ]

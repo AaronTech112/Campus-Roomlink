@@ -19,12 +19,19 @@
         {% endif %}
         
         <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px; flex-direction: column; gap: 8px;">
-            <h2 style="margin:0; color:var(--primary);">₦{{ house.rent|intcomma }}/yr</h2>
+            <h2 style="margin:0; color:var(--primary);">
+                ₦{{ house.rent|intcomma }}/yr 
+                {% if house.listing_type == 'roommate' %}
+                <span style="font-size:0.9rem; color:var(--text-muted); font-weight:normal;">(50% Share)</span>
+                {% endif %}
+            </h2>
             <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                {% if house.is_verified_listing %}
-                <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
-                {% else %}
-                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified Listing</span>
+                {% if house.listing_type != 'roommate' %}
+                    {% if house.is_verified_listing %}
+                    <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
+                    {% else %}
+                    <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified Listing</span>
+                    {% endif %}
                 {% endif %}
 
                 {% if house.posted_by.is_verified_student %}

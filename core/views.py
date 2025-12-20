@@ -43,6 +43,11 @@ def roommates(request):
 
 def listing_detail(request, id):
     house = get_object_or_404(Listing, id=id)
+    
+    # Increment view count
+    house.views_count += 1
+    house.save()
+    
     interests_list = []
     if house.interests:
         interests_list = [i.strip() for i in house.interests.split(',')]
@@ -140,10 +145,36 @@ def upload_verification(request):
 
 @login_required
 def my_listings(request):
-    user_listings = Listing.objects.filter(posted_by=request.user)
-    # Reusing houses template or create a specific one? 
-    # For now redirect to profile where listings are shown
-    return redirect('profile')
+    user_listings = Listing.objects.filter(posted_by=request.user).order_by('-created_at')
+    return render(request, 'my_listings.html', {'user_listings': user_listings})
+
+@login_required
+def edit_listing(request, id):
+    listing = get_object_or_404(Listing, id=id, posted_by=request.user)
+    if request.method == 'POST':
+        form = ListingForm(request.POST, request.FILES, instance=listing)
+        if form.is_valid():
+            listing = form.save(commit=False)
+            
+            # Handle multi-select interests for roommates
+            if listing.listing_type == 'roommate':
+                interests_list = request.POST.getlist('interests_list')
+                if interests_list:
+                    listing.interests = ",".join(interests_list)
+                    
+            listing.save()
+            messages.success(request, "Listing updated successfully!")
+            return redirect('my_listings')
+    else:
+        form = ListingForm(instance=listing)
+    return render(request, 'post.html', {'form': form, 'is_edit': True})
+
+@login_required
+def delete_listing(request, id):
+    listing = get_object_or_404(Listing, id=id, posted_by=request.user)
+    listing.delete()
+    messages.success(request, "Listing deleted successfully.")
+    return redirect('my_listings')
 
 @login_required
 def settings(request):
