@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('houses/', views.houses, name='houses'),
     path('houses/<int:id>/', views.listing_detail, name='listing_detail'),
+    path('user/<int:user_id>/', views.user_profile, name='user_profile'),
     path('roommates/', views.roommates, name='roommates'),
     
     # Auth

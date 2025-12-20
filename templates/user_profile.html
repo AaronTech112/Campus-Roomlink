@@ -2,30 +2,39 @@
 {% load static humanize %}
 
 {% block content %}
-<section id="home-screen" class="screen-page">
-    <div class="hero">
-        <h1>Find off-campus houses & roommates around your campus</h1>
-        <p class="trust-note"><i class="ph-fill ph-shield-check"></i> Built for students • Verified listings</p>
+<section id="user-profile-screen" class="screen-page">
+    <div class="profile-header-card" style="text-align:center; padding:32px 20px; background:white; border-bottom:1px solid #eee;">
+        <img src="https://ui-avatars.com/api/?name={{ profile_user.full_name|urlencode }}&background=random&size=128" class="profile-avatar-large" alt="{{ profile_user.full_name }}">
         
-        <div class="hero-actions">
-            <a href="{% url 'houses' %}" class="btn btn-primary btn-large text-decoration-none">
-                <i class="ph ph-house-line"></i> Find a House
+        <h2 style="margin-top:16px; margin-bottom:4px;">{{ profile_user.full_name }}</h2>
+        
+        {% if profile_user.department %}
+        <p style="color:var(--text-secondary); margin-bottom:8px;">{{ profile_user.department }}</p>
+        {% endif %}
+
+        <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:12px;">
+            {% if profile_user.is_verified_student %}
+            <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Student</span>
+            {% else %}
+            <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top:24px; display:flex; justify-content:center; gap:16px;">
+            <a href="https://wa.me/{{ profile_user.whatsapp_link }}" target="_blank" class="btn btn-primary" style="background-color:#25D366; border:none;">
+                <i class="ph-fill ph-whatsapp-logo"></i> Chat on WhatsApp
             </a>
-            <a href="{% url 'roommates' %}" class="btn btn-secondary btn-large text-decoration-none">
-                <i class="ph ph-users"></i> Find a Roommate
+            <a href="tel:{{ profile_user.phone_number }}" class="btn btn-secondary">
+                <i class="ph ph-phone"></i> Call
             </a>
         </div>
     </div>
 
-    <div class="featured-section">
-        <div class="section-header">
-            <h2>New Listings</h2>
-            <a href="{% url 'houses' %}" class="btn-link">See all</a>
-        </div>
-        <div class="horizontal-scroll" id="home-featured-list">
-            
-            <!-- Django Loop for Featured Listings -->
-            {% for house in featured_houses %}
+    <div class="profile-listings" style="padding:20px;">
+        <h3 style="margin-bottom:16px; font-size:1.1rem;">Listings by {{ profile_user.full_name }}</h3>
+        
+        <div class="listings-grid">
+            {% for house in user_listings %}
             <a href="{% url 'listing_detail' house.id %}" class="card-link">
                 <div class="card">
                     {% if house.image %}
@@ -36,7 +45,7 @@
                     </div>
                     {% endif %}
                     <div class="card-content">
-                        <div class="card-price">₦{{ house.rent|intcomma }}/yr</div>
+                        <div class="card-price">₦{{ house.rent|intcomma }}</div>
                         <div class="card-meta">{{ house.get_listing_type_display }} • {{ house.location }}</div>
                         <div style="margin-top:8px; display:flex; gap:4px; flex-wrap:wrap;">
                             {% if house.is_verified_listing %}
@@ -55,11 +64,8 @@
                 </div>
             </a>
             {% empty %}
-            <!-- Skeleton/Empty State if no data (mocking skeletons for now) -->
-            <div class="skeleton-card"></div>
-            <div class="skeleton-card"></div>
+            <p style="color:var(--text-secondary); text-align:center;">No active listings.</p>
             {% endfor %}
-
         </div>
     </div>
 </section>

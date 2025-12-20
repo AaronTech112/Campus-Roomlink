@@ -8,19 +8,19 @@ User = get_user_model()
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('email', 'full_name', 'phone_number')
+        fields = ('email', 'full_name', 'phone_number', 'department')
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ('email', 'full_name', 'phone_number', 'is_verified_student', 'verification_status')
+        fields = ('email', 'full_name', 'phone_number', 'department', 'is_verified_student', 'verification_status')
 
 class SignupForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ['full_name', 'email', 'phone_number', 'matric_number', 'password']
+        fields = ['full_name', 'email', 'phone_number', 'department', 'matric_number', 'password']
     
     def save(self, commit=True):
         user = super().save(commit=False)

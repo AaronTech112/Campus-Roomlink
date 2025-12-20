@@ -38,18 +38,20 @@
         <h3 style="margin-bottom:8px;">{{ house.title }}</h3>
         <p style="margin-bottom:16px;"><i class="ph ph-map-pin"></i> {{ house.location }}</p>
         
-        <div style="background:#F8FAFC; padding:16px; border-radius:12px; margin-bottom:20px;">
-            <h4 style="margin-bottom:8px;">Details</h4>
-            <div class="tags">
-                <span class="tag">{{ house.get_listing_type_display }}</span>
-                <span class="tag">Posted by {{ house.posted_by.full_name }}</span>
-                <span class="tag">{{ house.created_at|timesince }} ago</span>
-            </div>
-        </div>
-
         <div style="margin-bottom:20px;">
             <h4 style="margin-bottom:8px;">Description</h4>
             <p>{{ house.description|default:"No description provided."|linebreaks }}</p>
+        </div>
+
+        <div style="background:#F8FAFC; border-radius:12px; margin-bottom:20px;">
+            <h4 style="margin-bottom:8px;">Details</h4>
+            <div class="tags">
+                <span class="tag">{{ house.get_listing_type_display }}</span>
+                <a href="{% url 'user_profile' house.posted_by.id %}" class="tag" style="text-decoration:none; color:inherit; border-color:var(--primary); background:rgba(37,99,235,0.05);">
+                    Posted by {{ house.posted_by.full_name }} <i class="ph-bold ph-arrow-right" style="font-size:0.8em;"></i>
+                </a>
+                <span class="tag">{{ house.created_at|timesince }} ago</span>
+            </div>
         </div>
 
         <div style="display:flex; gap:12px; margin-bottom: 80px;"> <!-- Margin bottom for sticky nav -->

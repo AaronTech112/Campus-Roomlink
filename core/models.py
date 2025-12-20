@@ -24,6 +24,7 @@ class User(AbstractUser):
     
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
+    department = models.CharField(max_length=100, blank=True, null=True)
     matric_number = models.CharField(max_length=50, blank=True, null=True)
     
     # Verification

@@ -29,7 +29,7 @@
                 {% endif %}
                 <div class="card-content">
                     <div style="display:flex;justify-content:space-between;align-items:start;">
-                        <div class="card-price">₦{{ house.rent|intcomma }}</div>
+                        <div class="card-price">₦{{ house.rent|intcomma }}/yr</div>
                         <small>{{ house.created_at|timesince }} ago</small>
                     </div>
                     <h3 style="font-size:1rem;margin:4px 0;">{{ house.title }}</h3>

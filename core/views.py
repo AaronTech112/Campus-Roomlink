@@ -45,6 +45,11 @@ def listing_detail(request, id):
     house = get_object_or_404(Listing, id=id)
     return render(request, 'listing_detail.html', {'house': house})
 
+def user_profile(request, user_id):
+    profile_user = get_object_or_404(User, id=user_id)
+    user_listings = Listing.objects.filter(posted_by=profile_user).order_by('-created_at')
+    return render(request, 'user_profile.html', {'profile_user': profile_user, 'user_listings': user_listings})
+
 # --- Auth Views ---
 
 def signup_view(request):
