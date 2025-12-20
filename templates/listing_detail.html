@@ -38,6 +38,33 @@
         <h3 style="margin-bottom:8px;">{{ house.title }}</h3>
         <p style="margin-bottom:16px;"><i class="ph ph-map-pin"></i> {{ house.location }}</p>
         
+        {% if house.listing_type == 'roommate' %}
+        <div style="background:#F8FAFC; border: 1px solid var(--border-color); border-radius:12px; padding:16px; margin-bottom:20px;">
+            <h4 style="margin-bottom:12px; font-size:1rem;">About the Roommate</h4>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
+                <div>
+                    <span style="display:block; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Gender</span>
+                    <span style="font-weight:600; font-size:1.05rem;">{{ house.get_gender_preference_display|default:"Not specified" }}</span>
+                </div>
+                <div>
+                    <span style="display:block; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Level</span>
+                    <span style="font-weight:600; font-size:1.05rem;">{{ house.get_level_preference_display|default:"Not specified" }}</span>
+                </div>
+            </div>
+            
+            {% if interests_list %}
+            <div>
+                <span style="display:block; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Interests & Habits</span>
+                <div class="tags">
+                    {% for interest in interests_list %}
+                    <span class="tag" style="background:white; border:1px solid var(--border-color);">{{ interest }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
         <div style="margin-bottom:20px;">
             <h4 style="margin-bottom:8px;">Description</h4>
             <p>{{ house.description|default:"No description provided."|linebreaks }}</p>

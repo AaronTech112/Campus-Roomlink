@@ -43,7 +43,10 @@ def roommates(request):
 
 def listing_detail(request, id):
     house = get_object_or_404(Listing, id=id)
-    return render(request, 'listing_detail.html', {'house': house})
+    interests_list = []
+    if house.interests:
+        interests_list = [i.strip() for i in house.interests.split(',')]
+    return render(request, 'listing_detail.html', {'house': house, 'interests_list': interests_list})
 
 def user_profile(request, user_id):
     profile_user = get_object_or_404(User, id=user_id)
