@@ -50,6 +50,12 @@
                     <span style="display:block; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Level</span>
                     <span style="font-weight:600; font-size:1.05rem;">{{ house.get_level_preference_display|default:"Not specified" }}</span>
                 </div>
+                {% if house.posted_by.department %}
+                <div style="grid-column: 1 / -1;">
+                    <span style="display:block; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Department</span>
+                    <span style="font-weight:600; font-size:1.05rem;">{{ house.posted_by.department }}</span>
+                </div>
+                {% endif %}
             </div>
             
             {% if interests_list %}
