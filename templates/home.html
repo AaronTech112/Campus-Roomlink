@@ -40,11 +40,11 @@
                         <div class="card-meta">{{ house.get_listing_type_display }} • {{ house.location }}</div>
                         <div style="margin-top:8px; display:flex; gap:4px; flex-wrap:wrap;">
                             {% if house.is_verified_listing %}
-                            <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified</span>
+                            <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
                             {% endif %}
                             
                             {% if house.posted_by.is_verified_student %}
-                            <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Student</span>
+                            <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Verified Student</span>
                             {% else %}
                             <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
                             {% endif %}
