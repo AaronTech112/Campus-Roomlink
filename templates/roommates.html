@@ -12,15 +12,10 @@
     
     <div class="roommates-list" id="roommates-list">
         {% for roomie in roommates %}
-        <div class="roommate-card">
-            <a href="{% url 'listing_detail' roomie.id %}" class="card-link-overlay"></a>
+        <div class="roommate-card" onclick="location.href='{% url 'listing_detail' roomie.id %}'" style="cursor: pointer;">
             <img src="https://ui-avatars.com/api/?name={{ roomie.posted_by.full_name|urlencode }}&background=random" class="roommate-avatar" alt="{{ roomie.posted_by.full_name }}">
             <div class="roommate-info">
-                <h3>
-                    <span style="text-decoration:none; color:inherit;">
-                        {{ roomie.posted_by.full_name }}
-                    </span>
-                </h3>
+                <h3>{{ roomie.posted_by.full_name }}</h3>
                 
                 <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">
                     {% if roomie.gender_preference %}{{ roomie.get_gender_preference_display }}{% endif %}
@@ -55,7 +50,7 @@
                      {% endif %}
                 </div>
             </div>
-            <a href="https://wa.me/{{ roomie.posted_by.whatsapp_link }}?text=Hello {{ roomie.posted_by.full_name }}, saw your profile on RoomLink!" target="_blank" class="btn-icon" style="color:#25D366; border-color:#25D366;">
+            <a href="https://wa.me/{{ roomie.posted_by.whatsapp_link }}?text=Hello {{ roomie.posted_by.full_name }}, saw your profile on RoomLink!" target="_blank" class="btn-icon" style="color:#25D366; border-color:#25D366;" onclick="event.stopPropagation()">
                 <i class="ph-fill ph-whatsapp-logo"></i>
             </a>
         </div>
