@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static humanize %}
 
 {% block header_actions %}
 <button class="btn-icon" onclick="openModal('filter-modal')">
@@ -20,19 +20,25 @@
         {% for house in houses %}
         <a href="{% url 'listing_detail' house.id %}" class="card-link">
             <div class="card">
-                <img src="{{ house.image }}" class="card-image" alt="{{ house.title }}">
+                {% if house.image %}
+                <img src="{{ house.image.url }}" class="card-image" alt="{{ house.title }}">
+                {% else %}
+                <div class="card-image" style="background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#aaa;">
+                    <i class="ph ph-image" style="font-size:2rem;"></i>
+                </div>
+                {% endif %}
                 <div class="card-content">
                     <div style="display:flex;justify-content:space-between;align-items:start;">
-                        <div class="card-price">₦{{ house.price }}</div>
-                        <small>{{ house.distance }} to campus</small>
+                        <div class="card-price">₦{{ house.rent|intcomma }}</div>
+                        <small>{{ house.created_at|timesince }} ago</small>
                     </div>
                     <h3 style="font-size:1rem;margin:4px 0;">{{ house.title }}</h3>
                     <div class="card-meta"><i class="ph ph-map-pin"></i> {{ house.location }}</div>
                     <div style="margin-top:8px; display:flex; gap:8px;">
-                        {% if house.verified %}
+                        {% if house.is_verified_listing %}
                         <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified</span>
                         {% endif %}
-                        <span class="badge" style="background:#f1f5f9;">{{ house.type }}</span>
+                        <span class="badge" style="background:#f1f5f9;">{{ house.get_listing_type_display }}</span>
                     </div>
                 </div>
             </div>

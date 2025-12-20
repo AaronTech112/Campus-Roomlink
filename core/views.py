@@ -1,119 +1,129 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Listing, User
+from .forms import SignupForm, LoginForm, ListingForm, VerificationForm
+from django.db.models import Case, When, Value, IntegerField
 
-# Mock Data
-MOCK_HOUSES = [
-    {
-        'id': 1,
-        'title': "Self-contain near Unilag Gate",
-        'price': "350,000",
-        'location': "Akoka, Yaba",
-        'type': "Self-contain",
-        'distance': "0.5km",
-        'image': "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=500&q=80",
-        'verified': True,
-        'is_new': False,
-        'description': "A lovely self-contain with running water and good security.",
-        'agent_phone': "+2348000000000"
-    },
-    {
-        'id': 2,
-        'title': "2 Bedroom Flat Share",
-        'price': "150,000",
-        'location': "Bariga",
-        'type': "Room",
-        'distance': "2.5km",
-        'image': "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=80",
-        'verified': True,
-        'is_new': True,
-        'description': "Looking for a flatmate to share this spacious 2 bedroom flat.",
-        'agent_phone': "+2348000000000"
-    },
-    {
-        'id': 3,
-        'title': "Studio Apartment",
-        'price': "450,000",
-        'location': "Onike",
-        'type': "Self-contain",
-        'distance': "1.2km",
-        'image': "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=500&q=80",
-        'verified': False,
-        'is_new': True,
-        'description': "Modern studio apartment recently renovated.",
-        'agent_phone': "+2348000000000"
-    }
-]
-
-MOCK_ROOMMATES = [
-    {
-        'id': 1,
-        'name': "Chidinma O.",
-        'budget': "100k - 150k",
-        'location': "Yaba / Akoka",
-        'tags': ["Quiet", "Non-smoker", "Christian"],
-        'avatar': "https://ui-avatars.com/api/?name=Chidinma+O&background=random"
-    },
-    {
-        'id': 2,
-        'name': "Tunde B.",
-        'budget': "200k",
-        'location': "Surulere",
-        'tags': ["Social", "Gamer", "Night-owl"],
-        'avatar': "https://ui-avatars.com/api/?name=Tunde+B&background=random"
-    },
-    {
-        'id': 3,
-        'name': "Amina Y.",
-        'budget': "120k",
-        'location': "Anywhere near campus",
-        'tags': ["Studious", "Clean"],
-        'avatar': "https://ui-avatars.com/api/?name=Amina+Y&background=random"
-    }
-]
+# --- Public Views ---
 
 def home(request):
-    context = {
-        'featured_houses': MOCK_HOUSES[:2]
-    }
-    return render(request, 'home.html', context)
+    # Featured listings: Verified listings first, then recent
+    featured_houses = Listing.objects.all().order_by(
+        '-is_verified_listing', '-created_at'
+    )[:5]
+    return render(request, 'home.html', {'featured_houses': featured_houses})
 
 def houses(request):
-    # Basic filtering logic could go here
-    context = {
-        'houses': MOCK_HOUSES
-    }
-    return render(request, 'houses.html', context)
+    # Sort: Verified listings higher
+    # Logic: 
+    # 1. Verified Listing (Highest)
+    # 2. Verified User
+    # 3. Unverified
+    
+    # Simple sorting by verified listing boolean first
+    houses = Listing.objects.filter(listing_type='house').order_by('-is_verified_listing', '-created_at')
+    
+    # Filter logic (basic)
+    q = request.GET.get('q')
+    if q:
+        houses = houses.filter(location__icontains=q)
+    
+    budget = request.GET.get('budget')
+    if budget:
+        houses = houses.filter(rent__lte=budget)
 
-def listing_detail(request, id):
-    house = next((h for h in MOCK_HOUSES if h['id'] == int(id)), None)
-    context = {
-        'house': house
-    }
-    return render(request, 'listing_detail.html', context)
+    return render(request, 'houses.html', {'houses': houses})
 
 def roommates(request):
-    context = {
-        'roommates': MOCK_ROOMMATES
-    }
-    return render(request, 'roommates.html', context)
+    # Show roommate listings
+    roommates = Listing.objects.filter(listing_type='roommate').order_by('-is_verified_listing', '-created_at')
+    return render(request, 'roommates.html', {'roommates': roommates})
 
+def listing_detail(request, id):
+    house = get_object_or_404(Listing, id=id)
+    return render(request, 'listing_detail.html', {'house': house})
+
+# --- Auth Views ---
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Account created! Welcome to RoomLink.")
+            return redirect('home')
+    else:
+        form = SignupForm()
+    return render(request, 'auth/signup.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(request, email=email, password=password)
+            if user:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, "Invalid email or password.")
+    else:
+        form = LoginForm()
+    return render(request, 'auth/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
+# --- Protected Views ---
+
+@login_required
+def profile(request):
+    user_listings = Listing.objects.filter(posted_by=request.user)
+    return render(request, 'profile.html', {'user_listings': user_listings})
+
+@login_required
 def post_listing(request):
     if request.method == 'POST':
-        # Handle form submission logic here
-        # For now, just redirect to houses
-        return redirect('houses')
-    return render(request, 'post.html')
+        form = ListingForm(request.POST, request.FILES)
+        if form.is_valid():
+            listing = form.save(commit=False)
+            listing.posted_by = request.user
+            # Logic: Listings are NOT verified by default
+            listing.is_verified_listing = False 
+            listing.save()
+            messages.success(request, "Listing posted successfully!")
+            return redirect('houses')
+    else:
+        form = ListingForm()
+    return render(request, 'post.html', {'form': form})
 
-def profile(request):
-    return render(request, 'profile.html')
+@login_required
+def upload_verification(request):
+    if request.method == 'POST':
+        form = VerificationForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.verification_status = 'pending' # Set to pending review
+            user.save()
+            messages.success(request, "Document uploaded. Admin will review shortly.")
+            return redirect('profile')
+    else:
+        form = VerificationForm(instance=request.user)
+    return render(request, 'auth/upload_verification.html', {'form': form})
 
+@login_required
 def my_listings(request):
-    # Placeholder
+    user_listings = Listing.objects.filter(posted_by=request.user)
+    # Reusing houses template or create a specific one? 
+    # For now redirect to profile where listings are shown
     return redirect('profile')
 
+@login_required
 def settings(request):
     # Placeholder
     return redirect('profile')
-
-def logout_view(request):
-    # Placeholder
-    return redirect('home')

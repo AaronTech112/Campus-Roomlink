@@ -11,19 +11,24 @@
             {% csrf_token %}
             
             <div class="form-group">
+                <label>Listing Title</label>
+                <input type="text" name="title" placeholder="e.g. Self-contain at Akoka" required>
+            </div>
+
+            <div class="form-group">
                 <label>Listing Type</label>
                 <div class="segment-control">
-                    <input type="radio" name="type" id="type-house" value="house" checked>
+                    <input type="radio" name="listing_type" id="type-house" value="house" checked>
                     <label for="type-house">House</label>
                     
-                    <input type="radio" name="type" id="type-roommate" value="roommate">
+                    <input type="radio" name="listing_type" id="type-roommate" value="roommate">
                     <label for="type-roommate">Roommate</label>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Price / Budget (₦)</label>
-                <input type="number" name="price" placeholder="e.g. 150000" required>
+                <input type="number" name="rent" placeholder="e.g. 150000" required>
             </div>
 
             <div class="form-group">
@@ -33,13 +38,13 @@
 
             <div class="form-group">
                 <label>Description</label>
-                <textarea name="description" placeholder="Describe the place or yourself..." rows="4"></textarea>
+                <textarea name="description" placeholder="Describe the place or yourself..." rows="4" required></textarea>
             </div>
 
-            <!-- Image Upload Placeholder -->
+            <!-- Image Upload -->
             <div class="form-group">
-                <label>Photos</label>
-                <input type="file" name="images" multiple accept="image/*">
+                <label>Cover Photo</label>
+                <input type="file" name="image" accept="image/*">
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">Post Listing</button>

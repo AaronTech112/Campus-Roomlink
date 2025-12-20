@@ -5,25 +5,49 @@
 <section id="profile-screen" class="screen-page">
     <div class="profile-header">
         <div class="avatar-large">
-            <!-- In real app: {{ user.profile.avatar.url }} -->
-            <img src="https://ui-avatars.com/api/?name={{ user.username|default:'Student User' }}&background=2563EB&color=fff" alt="User">
+            <img src="https://ui-avatars.com/api/?name={{ user.full_name|urlencode }}&background=2563EB&color=fff" alt="User">
         </div>
-        <h3>{{ user.username|default:"Student User" }}</h3>
+        <h3>{{ user.full_name }}</h3>
+        <p style="font-size:0.9rem; color:var(--text-muted);">{{ user.email }}</p>
         
-        {% if user.profile.is_verified %}
-        <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Student</span>
-        {% else %}
-        <span class="badge" style="background:#f1f5f9; color:#64748B;">Unverified</span>
-        {% endif %}
+        <div style="margin-top:8px;">
+            {% if user.is_verified_student %}
+                <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Student</span>
+            {% else %}
+                <span class="badge" style="background:#FEF3C7; color:#B45309; border:1px solid #FCD34D;">
+                    ⚠️ Unverified
+                </span>
+                {% if user.verification_status == 'pending' %}
+                    <p style="font-size:0.8rem; margin-top:4px; color:#B45309;">Verification Pending Review</p>
+                {% elif user.verification_status == 'rejected' %}
+                    <p style="font-size:0.8rem; margin-top:4px; color:red;">Verification Rejected. Please try again.</p>
+                    <a href="{% url 'upload_verification' %}" style="font-size:0.8rem; text-decoration:underline;">Re-upload ID</a>
+                {% else %}
+                    <div style="margin-top:8px;">
+                        <a href="{% url 'upload_verification' %}" class="btn btn-secondary" style="padding:6px 12px; font-size:0.85rem;">
+                            Get Verified
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
     </div>
 
     <div class="profile-menu">
+        <div style="padding: 10px 16px; font-weight:600; color:var(--text-muted); font-size:0.9rem;">Menu</div>
+        
         <a href="{% url 'my_listings' %}" class="menu-item text-decoration-none">
-            <i class="ph ph-house"></i> My Listings
+            <i class="ph ph-house"></i> My Listings 
+            <span style="margin-left:auto; background:#eee; padding:2px 8px; border-radius:10px; font-size:0.8rem;">
+                {{ user_listings.count }}
+            </span>
         </a>
+        
+        <!-- Placeholder -->
         <a href="{% url 'settings' %}" class="menu-item text-decoration-none">
             <i class="ph ph-gear"></i> Settings
         </a>
+        
         <a href="{% url 'logout' %}" class="menu-item text-danger text-decoration-none">
             <i class="ph ph-sign-out"></i> Logout
         </a>

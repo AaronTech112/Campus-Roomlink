@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="screen-page">
+    <div class="post-container">
+        <h2>Create Account</h2>
+        <p>Join RoomLink to find or post listings.</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <small class="text-danger">{{ field.errors.0 }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+        </form>
+        <p style="margin-top:16px; text-align:center;">
+            Already have an account? <a href="{% url 'login' %}" style="color:var(--primary);">Login</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

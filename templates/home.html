@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static humanize %}
 
 {% block content %}
 <section id="home-screen" class="screen-page">
@@ -28,17 +28,21 @@
             {% for house in featured_houses %}
             <a href="{% url 'listing_detail' house.id %}" class="card-link">
                 <div class="card">
-                    <img src="{{ house.image }}" class="card-image" alt="{{ house.title }}">
+                    {% if house.image %}
+                    <img src="{{ house.image.url }}" class="card-image" alt="{{ house.title }}">
+                    {% else %}
+                    <div class="card-image" style="background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#aaa;">
+                        <i class="ph ph-image" style="font-size:2rem;"></i>
+                    </div>
+                    {% endif %}
                     <div class="card-content">
-                        <div class="card-price">₦{{ house.price }}</div>
-                        <div class="card-meta">{{ house.type }} • {{ house.location }}</div>
+                        <div class="card-price">₦{{ house.rent|intcomma }}</div>
+                        <div class="card-meta">{{ house.get_listing_type_display }} • {{ house.location }}</div>
                         <div style="margin-top:8px;">
-                            {% if house.verified %}
+                            {% if house.is_verified_listing %}
                             <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified</span>
                             {% endif %}
-                            {% if house.is_new %}
-                            <span class="badge badge-new">New</span>
-                            {% endif %}
+                            <!-- Removed "New" badge logic for now, or could use created_at comparison -->
                         </div>
                     </div>
                 </div>

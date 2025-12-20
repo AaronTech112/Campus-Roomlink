@@ -59,7 +59,7 @@
         </a>
         <a href="{% url 'profile' %}" class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
             <i class="ph ph-user"></i>
-            <span>Profile</span>
+            <span>{% if user.is_authenticated %}Profile{% else %}Login{% endif %}</span>
         </a>
     </nav>
 
