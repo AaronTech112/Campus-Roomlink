@@ -19,9 +19,13 @@
                 <p style="font-size:0.85rem; color:var(--primary); font-weight:500;">Budget: ₦{{ roomie.rent|intcomma }}</p>
                 <p style="font-size:0.8rem; margin-bottom:6px;">Looking in: {{ roomie.location }}</p>
                 
-                <div style="margin-top:4px;">
+                <div style="margin-top:4px; display:flex; gap:4px; flex-wrap:wrap;">
+                     {% if roomie.is_verified_listing %}
+                     <span class="badge badge-verified" style="font-size:0.7rem;"><i class="ph-fill ph-seal-check"></i> Verified</span>
+                     {% endif %}
+
                      {% if roomie.posted_by.is_verified_student %}
-                     <span class="badge badge-verified" style="font-size:0.7rem;"><i class="ph-fill ph-seal-check"></i> Verified Student</span>
+                     <span class="badge" style="background:#e0f2fe; color:#0284c7; font-size:0.7rem;"><i class="ph-fill ph-student"></i> Student</span>
                      {% else %}
                      <span class="badge" style="background:#FEF3C7; color:#B45309; font-size:0.7rem;">Unverified</span>
                      {% endif %}

@@ -34,11 +34,16 @@
                     </div>
                     <h3 style="font-size:1rem;margin:4px 0;">{{ house.title }}</h3>
                     <div class="card-meta"><i class="ph ph-map-pin"></i> {{ house.location }}</div>
-                    <div style="margin-top:8px; display:flex; gap:8px;">
+                    <div style="margin-top:8px; display:flex; gap:4px; flex-wrap:wrap;">
                         {% if house.is_verified_listing %}
                         <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified</span>
                         {% endif %}
-                        <span class="badge" style="background:#f1f5f9;">{{ house.get_listing_type_display }}</span>
+
+                        {% if house.posted_by.is_verified_student %}
+                        <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Student</span>
+                        {% else %}
+                        <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
