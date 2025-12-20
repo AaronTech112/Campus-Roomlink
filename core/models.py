@@ -81,6 +81,15 @@ class Listing(models.Model):
     location = models.CharField(max_length=255)
     listing_type = models.CharField(max_length=20, choices=LISTING_TYPE_CHOICES)
     
+    # Roommate Specific Fields
+    GENDER_CHOICES = [('any', 'Any'), ('male', 'Male'), ('female', 'Female')]
+    gender_preference = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    
+    LEVEL_CHOICES = [('any', 'Any'), ('100', '100 Lvl'), ('200', '200 Lvl'), ('300', '300 Lvl'), ('400', '400 Lvl'), ('500', '500 Lvl')]
+    level_preference = models.CharField(max_length=10, choices=LEVEL_CHOICES, blank=True, null=True)
+    
+    interests = models.CharField(max_length=255, blank=True, null=True, help_text="Comma separated interests (e.g. Reading, Music, Sports)")
+
     # Simple single image for MVP
     image = models.ImageField(upload_to='listing_images/', blank=True, null=True)
     

@@ -11,19 +11,19 @@
             {% csrf_token %}
             
             <div class="form-group">
-                <label>Listing Title</label>
-                <input type="text" name="title" placeholder="e.g. Self-contain at Akoka" required>
-            </div>
-
-            <div class="form-group">
                 <label>Listing Type</label>
                 <div class="segment-control">
-                    <input type="radio" name="listing_type" id="type-house" value="house" checked>
+                    <input type="radio" name="listing_type" id="type-house" value="house" checked onchange="toggleFields()">
                     <label for="type-house">House</label>
                     
-                    <input type="radio" name="listing_type" id="type-roommate" value="roommate">
+                    <input type="radio" name="listing_type" id="type-roommate" value="roommate" onchange="toggleFields()">
                     <label for="type-roommate">Roommate</label>
                 </div>
+            </div>
+
+            <div class="form-group" id="title-field-group">
+                <label>Listing Title</label>
+                <input type="text" name="title" placeholder="e.g. Self-contain at Akoka">
             </div>
 
             <div class="form-group">
@@ -36,6 +36,92 @@
                 <input type="text" name="location" placeholder="e.g. Yaba, Akoka" required>
             </div>
 
+            <!-- Roommate Specific Fields (Hidden by default) -->
+            <div id="roommate-fields" style="display:none;">
+                <div class="form-group">
+                    <label>Preferred Gender</label>
+                    <select name="gender_preference" class="form-control" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; background:white;">
+                        <option value="any">Any</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Preferred Level</label>
+                    <select name="level_preference" class="form-control" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; background:white;">
+                        <option value="any">Any</option>
+                        <option value="100">100 Lvl</option>
+                        <option value="200">200 Lvl</option>
+                        <option value="300">300 Lvl</option>
+                        <option value="400">400 Lvl</option>
+                        <option value="500">500 Lvl</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Interests / Habits (Select all that apply)</label>
+                    <div class="interests-grid">
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Non-smoker">
+                            <span>Non-smoker</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Christian">
+                            <span>Christian</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Muslim">
+                            <span>Muslim</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Studious">
+                            <span>Studious</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Night Owl">
+                            <span>Night Owl</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Early Riser">
+                            <span>Early Riser</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Clean Freak">
+                            <span>Clean Freak</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Gamer">
+                            <span>Gamer</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Sports Fan">
+                            <span>Sports Fan</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Music Lover">
+                            <span>Music Lover</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Pet Friendly">
+                            <span>Pet Friendly</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="No Pets">
+                            <span>No Pets</span>
+                        </label>
+                         <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Introvert">
+                            <span>Introvert</span>
+                        </label>
+                         <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Extrovert">
+                            <span>Extrovert</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label>Description</label>
                 <textarea name="description" placeholder="Describe the place or yourself..." rows="4" required></textarea>
@@ -43,7 +129,7 @@
 
             <!-- Image Upload -->
             <div class="form-group">
-                <label>Cover Photo</label>
+                <label>Cover Photo (Optional)</label>
                 <input type="file" name="image" accept="image/*">
             </div>
 
@@ -51,4 +137,26 @@
         </form>
     </div>
 </section>
+
+<script>
+    function toggleFields() {
+        const isRoommate = document.getElementById('type-roommate').checked;
+        const roommateFields = document.getElementById('roommate-fields');
+        const titleFieldGroup = document.getElementById('title-field-group');
+        const titleInput = titleFieldGroup.querySelector('input');
+        
+        if (isRoommate) {
+            roommateFields.style.display = 'block';
+            titleFieldGroup.style.display = 'none';
+            titleInput.required = false; // Remove required attribute
+        } else {
+            roommateFields.style.display = 'none';
+            titleFieldGroup.style.display = 'block';
+            titleInput.required = true; // Add required attribute back
+        }
+    }
+    
+    // Run on load to set initial state
+    document.addEventListener('DOMContentLoaded', toggleFields);
+</script>
 {% endblock %}

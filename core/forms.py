@@ -42,6 +42,11 @@ class VerificationForm(forms.ModelForm):
         }
 
 class ListingForm(forms.ModelForm):
+    title = forms.CharField(required=False) # Make title optional as it's not needed for Roommate requests
+
     class Meta:
         model = Listing
-        fields = ['title', 'description', 'rent', 'location', 'listing_type', 'image']
+        fields = ['title', 'description', 'rent', 'location', 'listing_type', 'image', 'gender_preference', 'level_preference', 'interests']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe the house or roommate request...'}),
+        }

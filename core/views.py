@@ -98,10 +98,24 @@ def post_listing(request):
         if form.is_valid():
             listing = form.save(commit=False)
             listing.posted_by = request.user
-            # Logic: Listings are NOT verified by default
             listing.is_verified_listing = False 
+            
+            # Auto-generate title for Roommate listings if missing
+            if listing.listing_type == 'roommate':
+                if not listing.title:
+                    listing.title = f"Roommate Request - {request.user.full_name}"
+                
+                # Handle multi-select interests
+                interests_list = request.POST.getlist('interests_list')
+                if interests_list:
+                    listing.interests = ",".join(interests_list)
+            
             listing.save()
             messages.success(request, "Listing posted successfully!")
+            
+            # Redirect based on type
+            if listing.listing_type == 'roommate':
+                return redirect('roommates')
             return redirect('houses')
     else:
         form = ListingForm()
