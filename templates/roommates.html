@@ -13,7 +13,11 @@
     <div class="roommates-list" id="roommates-list">
         {% for roomie in roommates %}
         <div class="roommate-card" onclick="location.href='{% url 'listing_detail' roomie.id %}'" style="cursor: pointer;">
+            {% if roomie.image %}
+            <img src="{{ roomie.image.url }}" class="roommate-avatar" style="object-fit:cover;" alt="{{ roomie.posted_by.full_name }}">
+            {% else %}
             <img src="https://ui-avatars.com/api/?name={{ roomie.posted_by.full_name|urlencode }}&background=random" class="roommate-avatar" alt="{{ roomie.posted_by.full_name }}">
+            {% endif %}
             <div class="roommate-info">
                 <h3>{{ roomie.posted_by.full_name }}</h3>
                 
@@ -25,7 +29,7 @@
                 </p>
 
                 <p style="font-size:0.85rem; color:var(--primary); font-weight:500;">Budget: ₦{{ roomie.rent|intcomma }}</p>
-                <p style="font-size:0.8rem; margin-bottom:6px;">Looking in: {{ roomie.location }}</p>
+                <p style="font-size:0.8rem; margin-bottom:6px;">Location: {{ roomie.location }}</p>
                 
                 {% if roomie.interests_list %}
                 <div class="tags" style="margin-bottom:8px;">
@@ -44,9 +48,9 @@
                      {% endif %}
 
                      {% if roomie.posted_by.is_verified_student %}
-                     <span class="badge" style="background:#e0f2fe; color:#0284c7; font-size:0.7rem;"><i class="ph-fill ph-student"></i> Student</span>
+                     <span class="badge" style="background:#e0f2fe; color:#0284c7; font-size:0.7rem;"><i class="ph-fill ph-student"></i> Verified Student</span>
                      {% else %}
-                     <span class="badge" style="background:#FEF3C7; color:#B45309; font-size:0.7rem;">Unverified</span>
+                     <span class="badge" style="background:#FEF3C7; color:#B45309; font-size:0.7rem;">Unverified Student</span>
                      {% endif %}
                 </div>
             </div>
