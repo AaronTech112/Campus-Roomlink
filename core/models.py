@@ -101,6 +101,12 @@ class Listing(models.Model):
         return self.title
 
     @property
+    def interests_list(self):
+        if self.interests:
+            return [x.strip() for x in self.interests.split(',')]
+        return []
+
+    @property
     def verification_badge(self):
         if self.is_verified_listing:
             return "Verified Listing"

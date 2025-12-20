@@ -13,11 +13,35 @@
     <div class="roommates-list" id="roommates-list">
         {% for roomie in roommates %}
         <div class="roommate-card">
+            <a href="{% url 'listing_detail' roomie.id %}" class="card-link-overlay"></a>
             <img src="https://ui-avatars.com/api/?name={{ roomie.posted_by.full_name|urlencode }}&background=random" class="roommate-avatar" alt="{{ roomie.posted_by.full_name }}">
             <div class="roommate-info">
-                <h3>{{ roomie.posted_by.full_name }}</h3>
+                <h3>
+                    <span style="text-decoration:none; color:inherit;">
+                        {{ roomie.posted_by.full_name }}
+                    </span>
+                </h3>
+                
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">
+                    {% if roomie.gender_preference %}{{ roomie.get_gender_preference_display }}{% endif %}
+                    {% if roomie.gender_preference and roomie.level_preference %} • {% endif %}
+                    {% if roomie.level_preference %}{{ roomie.get_level_preference_display }}{% endif %}
+                    {% if roomie.posted_by.department %} • {{ roomie.posted_by.department }}{% endif %}
+                </p>
+
                 <p style="font-size:0.85rem; color:var(--primary); font-weight:500;">Budget: ₦{{ roomie.rent|intcomma }}</p>
                 <p style="font-size:0.8rem; margin-bottom:6px;">Looking in: {{ roomie.location }}</p>
+                
+                {% if roomie.interests_list %}
+                <div class="tags" style="margin-bottom:8px;">
+                    {% for interest in roomie.interests_list|slice:":3" %}
+                    <span class="tag" style="font-size:0.7rem; padding:2px 6px;">{{ interest }}</span>
+                    {% endfor %}
+                    {% if roomie.interests_list|length > 3 %}
+                    <span class="tag" style="font-size:0.7rem; padding:2px 6px;">+{{ roomie.interests_list|length|add:"-3" }}</span>
+                    {% endif %}
+                </div>
+                {% endif %}
                 
                 <div style="margin-top:4px; display:flex; gap:4px; flex-wrap:wrap;">
                      {% if roomie.is_verified_listing %}

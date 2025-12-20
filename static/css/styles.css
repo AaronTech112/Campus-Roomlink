@@ -133,7 +133,27 @@ a { text-decoration: none; color: inherit; }
     gap: 16px;
     margin-bottom: 16px;
     align-items: center;
+    position: relative; /* Make card reference point */
+    transition: transform 0.2s, box-shadow 0.2s;
 }
+.roommate-card:active {
+    transform: scale(0.99);
+}
+/* Stretched link to make entire card clickable */
+.card-link-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+/* Ensure buttons are above the link overlay */
+.roommate-card .btn-icon {
+    position: relative;
+    z-index: 2;
+}
+
 .roommate-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
 .roommate-info { flex: 1; }
 .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
