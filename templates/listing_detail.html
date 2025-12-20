@@ -18,15 +18,21 @@
         </div>
         {% endif %}
         
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px; flex-direction: column; gap: 8px;">
             <h2 style="margin:0; color:var(--primary);">₦{{ house.rent|intcomma }}/yr</h2>
-            {% if house.is_verified_listing %}
-            <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
-            {% elif house.posted_by.is_verified_student %}
-            <span class="badge" style="background:#e0f2fe; color:#0284c7;">Posted by Verified Student</span>
-            {% else %}
-            <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
-            {% endif %}
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                {% if house.is_verified_listing %}
+                <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
+                {% else %}
+                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified Listing</span>
+                {% endif %}
+
+                {% if house.posted_by.is_verified_student %}
+                <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Verified Student</span>
+                {% else %}
+                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+                {% endif %}
+            </div>
         </div>
         
         <h3 style="margin-bottom:8px;">{{ house.title }}</h3>
