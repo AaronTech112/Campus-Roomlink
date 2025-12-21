@@ -22,7 +22,17 @@ class SignupForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['full_name', 'email', 'phone_number', 'department', 'matric_number', 'password']
+        widgets = {
+            'matric_number': forms.TextInput(attrs={'placeholder': '2023/CP/CSC/0034'}),
+        }
     
+    def clean_matric_number(self):
+        matric_number = self.cleaned_data.get('matric_number')
+        if matric_number:
+            if len(matric_number) != 16:
+                raise forms.ValidationError("Matric number must be exactly 16 characters.")
+        return matric_number
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
@@ -55,7 +65,17 @@ class VerificationForm(forms.ModelForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['full_name', 'email', 'phone_number']
+        fields = ['full_name', 'email', 'phone_number', 'department', 'matric_number']
+        widgets = {
+            'matric_number': forms.TextInput(attrs={'placeholder': '2023/CP/CSC/0034'}),
+        }
+    
+    def clean_matric_number(self):
+        matric_number = self.cleaned_data.get('matric_number')
+        if matric_number:
+            if len(matric_number) != 16:
+                raise forms.ValidationError("Matric number must be exactly 16 characters.")
+        return matric_number
         
 class ListingForm(forms.ModelForm):
     title = forms.CharField(required=False) # Make title optional as it's not needed for Roommate requests
