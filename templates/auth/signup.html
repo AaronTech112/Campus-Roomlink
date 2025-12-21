@@ -12,11 +12,18 @@
                 <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">{{ field.label }}</label>
                 
                 <div class="input-wrapper" style="position: relative;">
-                    {{ field }}
-                    {% if "password" in field.name %}
-                        <button type="button" class="password-toggle" onclick="togglePassword(this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #6B7280; padding: 0; display: flex; align-items: center;">
-                            <i class="ph ph-eye" style="font-size: 1.25rem;"></i>
-                        </button>
+                    {% if "phone_number" in field.name %}
+                        <div style="display: flex; align-items: center; border: 1px solid #D1D5DB; border-radius: 8px; overflow: hidden; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" class="phone-input-group">
+                            <span style="background: #F3F4F6; padding: 0.75rem 0.5rem 0.75rem 1rem; color: #374151; font-weight: 500; border-right: 1px solid #D1D5DB; font-size: 0.95rem;">+234</span>
+                            {{ field }}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                        {% if "password" in field.name %}
+                            <button type="button" class="password-toggle" onclick="togglePassword(this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #6B7280; padding: 0; display: flex; align-items: center;">
+                                <i class="ph ph-eye" style="font-size: 1.25rem;"></i>
+                            </button>
+                        {% endif %}
                     {% endif %}
                 </div>
                 
@@ -47,6 +54,19 @@
         font-size: 0.95rem;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         box-sizing: border-box; /* Ensure padding doesn't affect width */
+    }
+
+    /* Style for phone input inside the group */
+    .post-container .phone-input-group input[type="text"] {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding-left: 0.5rem;
+    }
+    
+    .post-container .phone-input-group:focus-within {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     .post-container input:focus,

@@ -16,13 +16,20 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('email', 'full_name', 'phone_number', 'department', 'is_verified_student', 'verification_status')
 
 class SignupForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '******'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '******'}), label="Confirm Password")
 
     class Meta:
         model = User
         fields = ['full_name', 'email', 'phone_number', 'department', 'matric_number', 'password']
+        labels = {
+            'phone_number': 'WhatsApp Number',
+        }
         widgets = {
+            'full_name': forms.TextInput(attrs={'placeholder': 'John Doe'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'john@example.com'}),
+            'phone_number': forms.TextInput(attrs={'placeholder': '9012345678', 'maxlength': '10'}),
+            'department': forms.TextInput(attrs={'placeholder': 'Computer Science'}),
             'matric_number': forms.TextInput(attrs={'placeholder': '2023/CP/CSC/0034'}),
         }
     
@@ -32,6 +39,21 @@ class SignupForm(forms.ModelForm):
             if len(matric_number) != 16:
                 raise forms.ValidationError("Matric number must be exactly 16 characters.")
         return matric_number
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number')
+        if phone_number:
+            # Ensure it's digits only
+            if not phone_number.isdigit():
+                 raise forms.ValidationError("WhatsApp number must contain digits only.")
+            
+            # Ensure exactly 10 digits
+            if len(phone_number) != 10:
+                raise forms.ValidationError("Please enter exactly 10 digits after +234.")
+            
+            # Prepend +234
+            return "+234" + phone_number
+        return phone_number
 
     def clean(self):
         cleaned_data = super().clean()
