@@ -1,26 +1,81 @@
 {% extends 'base.html' %}
 {% block content %}
 <section class="screen-page">
-    <div class="post-container">
-        <h2>Create Account</h2>
-        <p>Join RoomLink to find or post listings.</p>
+    <div class="post-container" style="max-width: 450px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+        <h2 style="font-size: 1.875rem; font-weight: 700; color: #111827; text-align: center; margin-bottom: 0.5rem;">Create Account</h2>
+        <p style="text-align: center; color: #6B7280; margin-bottom: 2rem;">Join RoomLink to find or post listings.</p>
         
         <form method="POST">
             {% csrf_token %}
             {% for field in form %}
-            <div class="form-group">
-                <label>{{ field.label }}</label>
-                {{ field }}
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">{{ field.label }}</label>
+                
+                <div class="input-wrapper" style="position: relative;">
+                    {{ field }}
+                    {% if "password" in field.name %}
+                        <button type="button" class="password-toggle" onclick="togglePassword(this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #6B7280; padding: 0; display: flex; align-items: center;">
+                            <i class="ph ph-eye" style="font-size: 1.25rem;"></i>
+                        </button>
+                    {% endif %}
+                </div>
+                
                 {% if field.errors %}
-                <small class="text-danger">{{ field.errors.0 }}</small>
+                <small class="text-danger" style="color: #DC2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;">{{ field.errors.0 }}</small>
                 {% endif %}
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+            <button type="submit" class="btn btn-primary btn-block" style="width: 100%; padding: 0.75rem 1rem; font-size: 1rem; font-weight: 600; border-radius: 8px; margin-top: 1rem;">Sign Up</button>
         </form>
-        <p style="margin-top:16px; text-align:center;">
-            Already have an account? <a href="{% url 'login' %}" style="color:var(--primary);">Login</a>
+        <p style="margin-top: 1.5rem; text-align: center; font-size: 0.875rem; color: #6B7280;">
+            Already have an account? <a href="{% url 'login' %}" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Login</a>
         </p>
     </div>
 </section>
+
+<style>
+    /* Scoped styles for auth forms */
+    .post-container input[type="text"],
+    .post-container input[type="email"],
+    .post-container input[type="password"],
+    .post-container input[type="number"],
+    .post-container select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #D1D5DB;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        box-sizing: border-box; /* Ensure padding doesn't affect width */
+    }
+
+    .post-container input:focus,
+    .post-container select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    /* Ensure password inputs have space for the eye icon */
+    .post-container input[type="password"] {
+        padding-right: 40px;
+    }
+</style>
+
+<script>
+    function togglePassword(button) {
+        const input = button.previousElementSibling;
+        const icon = button.querySelector('i');
+        
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove('ph-eye');
+            icon.classList.add('ph-eye-slash');
+        } else {
+            input.type = "password";
+            icon.classList.remove('ph-eye-slash');
+            icon.classList.add('ph-eye');
+        }
+    }
+</script>
 {% endblock %}
