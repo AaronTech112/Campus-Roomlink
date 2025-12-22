@@ -36,11 +36,14 @@
                     </div>
                     {% endif %}
                     <div class="card-content">
-                        <div class="card-price">
-                            ₦{{ house.rent|intcomma }}/yr
-                            {% if house.listing_type == 'roommate' %}
-                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(50% Share)</span>
-                            {% endif %}
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <div class="card-price">
+                                ₦{{ house.rent|intcomma }}/yr
+                                {% if house.listing_type == 'roommate' %}
+                                <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(50% Share)</span>
+                                {% endif %}
+                            </div>
+                            <small style="color:var(--text-muted); font-size:0.75rem; white-space:nowrap;">{{ house.created_at|timesince }} ago</small>
                         </div>
                         <div class="card-meta">{{ house.get_listing_type_display }} • {{ house.location }}</div>
                         <div style="margin-top:8px; display:flex; gap:4px; flex-wrap:wrap;">
