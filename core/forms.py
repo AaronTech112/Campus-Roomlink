@@ -99,12 +99,29 @@ class ProfileUpdateForm(forms.ModelForm):
                 raise forms.ValidationError("Matric number must be exactly 16 characters.")
         return matric_number
         
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+class MultipleFileField(forms.FileField):
+    def to_python(self, data):
+        if not data:
+            return None
+        if isinstance(data, list):
+            return data
+        return [data]
+
+    def validate(self, value):
+        if self.required and not value:
+            raise forms.ValidationError(self.error_messages['required'], code='required')
+
 class ListingForm(forms.ModelForm):
     title = forms.CharField(required=False) # Make title optional as it's not needed for Roommate requests
+    images = MultipleFileField(widget=MultipleFileInput(attrs={'multiple': True}), required=False, label="Upload Images (Select multiple)")
 
     class Meta:
         model = Listing
         fields = ['title', 'description', 'rent', 'location', 'listing_type', 'image', 'gender_preference', 'level_preference', 'interests']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe the house or roommate request...'}),
+            'image': forms.HiddenInput(), # Hide the single image field, we will handle it in the view
         }

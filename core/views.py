@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Listing, User
+from .models import Listing, User, ListingImage
 from .forms import SignupForm, LoginForm, ListingForm, VerificationForm, ProfileUpdateForm
 from django.db.models import Case, When, Value, IntegerField
 
@@ -108,6 +108,12 @@ def post_listing(request):
             listing.posted_by = request.user
             listing.is_verified_listing = False 
             
+            # Handle images
+            images = request.FILES.getlist('images')
+            if images:
+                # Set the first image as the main thumbnail
+                listing.image = images[0]
+            
             # Auto-generate title for Roommate listings if missing
             if listing.listing_type == 'roommate':
                 if not listing.title:
@@ -119,6 +125,12 @@ def post_listing(request):
                     listing.interests = ",".join(interests_list)
             
             listing.save()
+            
+            # Save all images to gallery
+            if images:
+                for img in images:
+                    ListingImage.objects.create(listing=listing, image=img)
+
             messages.success(request, "Listing posted successfully!")
             
             # Redirect based on type
@@ -155,6 +167,17 @@ def edit_listing(request, id):
         form = ListingForm(request.POST, request.FILES, instance=listing)
         if form.is_valid():
             listing = form.save(commit=False)
+            
+            # Handle new images
+            images = request.FILES.getlist('images')
+            if images:
+                # If no main image exists, use the first new one
+                if not listing.image:
+                    listing.image = images[0]
+                
+                # Add to gallery
+                for img in images:
+                    ListingImage.objects.create(listing=listing, image=img)
             
             # Handle multi-select interests for roommates
             if listing.listing_type == 'roommate':

@@ -83,6 +83,19 @@
             <p>{{ house.description|default:"No description provided."|linebreaks }}</p>
         </div>
 
+        {% if house.images.all %}
+        <div style="margin-bottom:20px;">
+            <h4 style="margin-bottom:8px;">Photos</h4>
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+                {% for img in house.images.all %}
+                <div style="aspect-ratio: 1; overflow: hidden; border-radius: 8px;">
+                    <img src="{{ img.image.url }}" onclick="window.open(this.src, '_blank')" style="width:100%; height:100%; object-fit:cover; cursor:pointer; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" alt="Gallery Image">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <div style="background:#F8FAFC; border-radius:12px; margin-bottom:20px;">
             <h4 style="margin-bottom:8px;">Details</h4>
             <div class="tags">

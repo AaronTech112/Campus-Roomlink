@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Listing
+from .models import User, Listing, ListingImage
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 class CustomUserAdmin(UserAdmin):
@@ -40,10 +40,15 @@ class CustomUserAdmin(UserAdmin):
     reject_verification.short_description = "Reject selected users' verification"
 
 
+class ListingImageInline(admin.TabularInline):
+    model = ListingImage
+    extra = 1
+
 class ListingAdmin(admin.ModelAdmin):
     list_display = ('title', 'listing_type', 'posted_by', 'is_verified_listing', 'created_at')
     list_filter = ('listing_type', 'is_verified_listing')
     search_fields = ('title', 'location', 'posted_by__email')
+    inlines = [ListingImageInline]
     
     actions = ['verify_listings']
 

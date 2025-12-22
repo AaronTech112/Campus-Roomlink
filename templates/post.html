@@ -129,13 +129,15 @@
 
             <!-- Image Upload -->
             <div class="form-group">
-                <label>Cover Photo (Optional)</label>
+                <label id="image-label">Photos</label>
                 {% if form.instance.image %}
                 <div style="margin-bottom: 8px;">
                     <img src="{{ form.instance.image.url }}" style="height: 100px; border-radius: 8px;">
+                    <p style="font-size: 0.8rem; color: #666;">Current Cover Photo</p>
                 </div>
                 {% endif %}
-                <input type="file" name="image" accept="image/*">
+                <input type="file" name="images" id="image-input" accept="image/*" class="form-control" style="padding: 10px; background: white;">
+                <small id="image-help" style="display:block; margin-top:4px; color:#666;">Select multiple photos for your house listing.</small>
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">{% if is_edit %}Update Listing{% else %}Post Listing{% endif %}</button>
@@ -149,15 +151,28 @@
         const roommateFields = document.getElementById('roommate-fields');
         const titleFieldGroup = document.getElementById('title-field-group');
         const titleInput = titleFieldGroup.querySelector('input');
+        const imageInput = document.getElementById('image-input');
+        const imageHelp = document.getElementById('image-help');
+        const imageLabel = document.getElementById('image-label');
         
         if (isRoommate) {
             roommateFields.style.display = 'block';
             titleFieldGroup.style.display = 'none';
             titleInput.required = false; // Remove required attribute
+            
+            // Roommate: Single image usually
+            imageInput.removeAttribute('multiple');
+            imageLabel.innerText = "Profile Photo / Selfie";
+            imageHelp.innerText = "Upload a photo of yourself.";
         } else {
             roommateFields.style.display = 'none';
             titleFieldGroup.style.display = 'block';
             titleInput.required = true; // Add required attribute back
+            
+            // House: Multiple images
+            imageInput.setAttribute('multiple', 'multiple');
+            imageLabel.innerText = "House Photos";
+            imageHelp.innerText = "You can select multiple photos (Main photo + Gallery).";
         }
     }
     
