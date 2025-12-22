@@ -13,10 +13,10 @@
         <form method="GET" action="{% url 'houses' %}" class="search-input" style="width:100%; display:flex; align-items:center;">
             <i class="ph ph-magnifying-glass"></i>
             <input type="text" placeholder="Search houses, location..." name="q" value="{{ request.GET.q|default:'' }}" style="flex:1;">
-            {% if request.GET.q %}
-            brs<a href="{% url 'houses' %}" style="text-decoration:none; color:#555; padding: 0 10px; display:flex; align-items:center; gap:4px; border-left:1px solid #eee; height:24px;">
-                <span style="font-size:0.9rem; font-weight:500;">Clear Search</span>
-                <i class="ph-fill ph-x-circle" style="font-size: 1.1rem; color:#888;"></i>
+            {% if request.GET.q or request.GET.min_budget or request.GET.max_budget %}
+            <a href="{% url 'houses' %}" style="text-decoration:none; color:#555; padding: 0 10px; display:flex; align-items:center; gap:4px; border-left:1px solid #eee; height:24px; white-space:nowrap;">
+                <span style="font-size:0.9rem; font-weight:500;">Show All</span>
+                <i class="ph-fill ph-arrow-counter-clockwise" style="font-size: 1.1rem; color:#888;"></i>
             </a>
             {% endif %}
         </form>
@@ -89,8 +89,9 @@
                 <input type="hidden" name="q" value="{{ request.GET.q }}">
                 {% endif %}
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+            <div class="modal-footer" style="display:flex; gap:10px;">
+                <a href="{% url 'houses' %}" class="btn" style="flex:1; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; border:1px solid #ddd; background:#fff; color:#333;">Reset</a>
+                <button type="submit" class="btn btn-primary" style="flex:2;">Apply Filters</button>
             </div>
         </form>
     </div>
