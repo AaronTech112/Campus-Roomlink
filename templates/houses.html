@@ -72,23 +72,13 @@
         <form method="GET" action="{% url 'houses' %}">
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Budget Range</label>
-                    <input type="range" name="budget" min="50000" max="1000000" step="10000" value="{{ request.GET.budget }}">
+                    <label>Maximum Budget: ₦<span id="budget-val">{{ request.GET.budget|default:"500000"|intcomma }}</span></label>
+                    <input type="range" name="budget" id="budget-range" min="50000" max="2000000" step="50000" value="{{ request.GET.budget|default:'500000' }}" oninput="updateBudgetLabel(this.value)">
                 </div>
-                <div class="form-group">
-                    <label>Distance to Campus</label>
-                    <div class="chips">
-                        <!-- Simplified for MVP structure - in real Django these would be inputs/labels -->
-                        <label class="chip-label">
-                            <input type="radio" name="distance" value="1" class="hidden-radio">
-                            <span class="chip"> < 1km </span>
-                        </label>
-                        <label class="chip-label">
-                            <input type="radio" name="distance" value="5" class="hidden-radio">
-                            <span class="chip"> < 5km </span>
-                        </label>
-                    </div>
-                </div>
+                
+                {% if request.GET.q %}
+                <input type="hidden" name="q" value="{{ request.GET.q }}">
+                {% endif %}
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
@@ -97,4 +87,10 @@
     </div>
     <div class="modal-backdrop" onclick="closeModal('filter-modal')"></div>
 </div>
+
+<script>
+    function updateBudgetLabel(val) {
+        document.getElementById('budget-val').innerText = Number(val).toLocaleString();
+    }
+</script>
 {% endblock %}
