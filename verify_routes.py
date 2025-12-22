@@ -40,19 +40,19 @@ def run_checks():
     # but we can check history to see if it redirected
     print("\n--- Access Control Verification ---")
     
-    # Profile should redirect to login
+    # Profile should redirect to signup
     r = requests.get(f"{BASE_URL}/profile/", allow_redirects=False)
-    if r.status_code == 302 and "/login" in r.headers.get('Location', ''):
-        print(f"Checking /profile/ (Unauthenticated): Redirects to Login ✅")
+    if r.status_code == 302 and "/signup" in r.headers.get('Location', ''):
+        print(f"Checking /profile/ (Unauthenticated): Redirects to Signup ✅")
     else:
-        print(f"Checking /profile/ (Unauthenticated): Status {r.status_code} ❌")
+        print(f"Checking /profile/ (Unauthenticated): Status {r.status_code} ❌ (Location: {r.headers.get('Location', '')})")
 
-    # Post Listing should redirect to login
+    # Post Listing should redirect to signup
     r = requests.get(f"{BASE_URL}/post/", allow_redirects=False)
-    if r.status_code == 302 and "/login" in r.headers.get('Location', ''):
-        print(f"Checking /post/ (Unauthenticated): Redirects to Login ✅")
+    if r.status_code == 302 and "/signup" in r.headers.get('Location', ''):
+        print(f"Checking /post/ (Unauthenticated): Redirects to Signup ✅")
     else:
-        print(f"Checking /post/ (Unauthenticated): Status {r.status_code} ❌")
+        print(f"Checking /post/ (Unauthenticated): Status {r.status_code} ❌ (Location: {r.headers.get('Location', '')})")
 
 if __name__ == "__main__":
     run_checks()
