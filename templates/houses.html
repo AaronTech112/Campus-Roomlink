@@ -12,7 +12,13 @@
     <div class="filter-bar">
         <form method="GET" action="{% url 'houses' %}" class="search-input" style="width:100%; display:flex; align-items:center;">
             <i class="ph ph-magnifying-glass"></i>
-            <input type="text" placeholder="Search houses, location..." name="q" value="{{ request.GET.q }}">
+            <input type="text" placeholder="Search houses, location..." name="q" value="{{ request.GET.q|default:'' }}" style="flex:1;">
+            {% if request.GET.q %}
+            brs<a href="{% url 'houses' %}" style="text-decoration:none; color:#555; padding: 0 10px; display:flex; align-items:center; gap:4px; border-left:1px solid #eee; height:24px;">
+                <span style="font-size:0.9rem; font-weight:500;">Clear Search</span>
+                <i class="ph-fill ph-x-circle" style="font-size: 1.1rem; color:#888;"></i>
+            </a>
+            {% endif %}
         </form>
     </div>
     
