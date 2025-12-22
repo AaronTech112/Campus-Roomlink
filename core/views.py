@@ -66,6 +66,10 @@ def roommates(request):
         roommates = roommates.filter(rent__gte=min_budget)
     if max_budget:
         roommates = roommates.filter(rent__lte=max_budget)
+        
+    gender = request.GET.get('gender')
+    if gender:
+        roommates = roommates.filter(gender_preference=gender)
 
     return render(request, 'roommates.html', {'roommates': roommates})
 
