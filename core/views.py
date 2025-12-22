@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Listing, User, ListingImage
 from .forms import SignupForm, LoginForm, ListingForm, VerificationForm, ProfileUpdateForm
-from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Case, When, Value, IntegerField, Q
 
 # --- Public Views ---
 
@@ -28,7 +28,11 @@ def houses(request):
     # Filter logic (basic)
     q = request.GET.get('q')
     if q:
-        houses = houses.filter(location__icontains=q)
+        houses = houses.filter(
+            Q(location__icontains=q) | 
+            Q(title__icontains=q) | 
+            Q(description__icontains=q)
+        )
     
     budget = request.GET.get('budget')
     if budget:

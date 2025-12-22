@@ -10,10 +10,10 @@
 {% block content %}
 <section id="houses-screen" class="screen-page">
     <div class="filter-bar">
-        <div class="search-input">
+        <form method="GET" action="{% url 'houses' %}" class="search-input" style="width:100%; display:flex; align-items:center;">
             <i class="ph ph-magnifying-glass"></i>
-            <input type="text" placeholder="Search location..." name="q" value="{{ request.GET.q }}">
-        </div>
+            <input type="text" placeholder="Search houses, location..." name="q" value="{{ request.GET.q }}">
+        </form>
     </div>
     
     <div class="listings-grid" id="houses-list">
