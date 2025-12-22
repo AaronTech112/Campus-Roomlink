@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
 {% load static humanize %}
 
+{% block header_actions %}
+<button class="btn-icon" onclick="openModal('filter-modal')">
+    <i class="ph ph-sliders-horizontal"></i>
+</button>
+{% endblock %}
+
 {% block content %}
 <section id="roommates-screen" class="screen-page">
     <div class="filter-bar">
-        <div class="search-input">
+        <form method="GET" action="{% url 'roommates' %}" class="search-input" style="width:100%; display:flex; align-items:center;">
             <i class="ph ph-magnifying-glass"></i>
-            <input type="text" placeholder="Search by lifestyle, budget..." name="q" value="{{ request.GET.q }}">
-        </div>
+            <input type="text" placeholder="Search by lifestyle, budget..." name="q" value="{{ request.GET.q|default:'' }}" style="flex:1;">
+            {% if request.GET.q or request.GET.min_budget or request.GET.max_budget %}
+            <a href="{% url 'roommates' %}" style="text-decoration:none; color:#555; padding: 0 10px; display:flex; align-items:center; gap:4px; border-left:1px solid #eee; height:24px; white-space:nowrap;">
+                <span style="font-size:0.9rem; font-weight:500;">Show All</span>
+                <i class="ph-fill ph-arrow-counter-clockwise" style="font-size: 1.1rem; color:#888;"></i>
+            </a>
+            {% endif %}
+        </form>
     </div>
     
     <div class="roommates-list" id="roommates-list">
@@ -59,4 +71,40 @@
         {% endfor %}
     </div>
 </section>
+
+<!-- Filter Modal (Client-side interaction, triggers GET param reload or JS filter) -->
+<div id="filter-modal" class="modal">
+    <div class="modal-content slide-up">
+        <div class="modal-header">
+            <h3>Filters</h3>
+            <button class="btn-icon" onclick="closeModal('filter-modal')"><i class="ph ph-x"></i></button>
+        </div>
+        <form method="GET" action="{% url 'roommates' %}">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label style="margin-bottom:8px; display:block;">Budget Range (₦)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex:1;">
+                            <label style="font-size:0.8rem; color:#666;">Min</label>
+                            <input type="number" name="min_budget" class="form-control" placeholder="Min" min="0" value="{{ request.GET.min_budget }}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-size:0.8rem; color:#666;">Max</label>
+                            <input type="number" name="max_budget" class="form-control" placeholder="Max" min="0" value="{{ request.GET.max_budget }}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        </div>
+                    </div>
+                </div>
+                
+                {% if request.GET.q %}
+                <input type="hidden" name="q" value="{{ request.GET.q }}">
+                {% endif %}
+            </div>
+            <div class="modal-footer" style="display:flex; gap:10px;">
+                <a href="{% url 'roommates' %}" class="btn" style="flex:1; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; border:1px solid #ddd; background:#fff; color:#333;">Reset</a>
+                <button type="submit" class="btn btn-primary" style="flex:2;">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+    <div class="modal-backdrop" onclick="closeModal('filter-modal')"></div>
+</div>
 {% endblock %}

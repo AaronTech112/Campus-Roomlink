@@ -47,6 +47,26 @@ def houses(request):
 def roommates(request):
     # Show roommate listings
     roommates = Listing.objects.filter(listing_type='roommate').order_by('-is_verified_listing', '-created_at')
+    
+    # Filter logic
+    q = request.GET.get('q')
+    if q:
+        roommates = roommates.filter(
+            Q(location__icontains=q) | 
+            Q(title__icontains=q) | 
+            Q(description__icontains=q) |
+            Q(interests__icontains=q) |
+            Q(posted_by__full_name__icontains=q)
+        )
+    
+    min_budget = request.GET.get('min_budget')
+    max_budget = request.GET.get('max_budget')
+    
+    if min_budget:
+        roommates = roommates.filter(rent__gte=min_budget)
+    if max_budget:
+        roommates = roommates.filter(rent__lte=max_budget)
+
     return render(request, 'roommates.html', {'roommates': roommates})
 
 def listing_detail(request, id):
