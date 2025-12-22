@@ -72,21 +72,16 @@
         <form method="GET" action="{% url 'houses' %}">
             <div class="modal-body">
                 <div class="form-group">
-                    <label style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        Maximum Budget (₦)
-                    </label>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <input type="number" name="budget" id="budget-input" 
-                               class="form-control" 
-                               placeholder="Enter amount"
-                               min="0"
-                               value="{{ request.GET.budget|default:'500000' }}"
-                               style="padding:12px; border:1px solid #ddd; border-radius:8px; font-size:1rem; width:100%; box-sizing:border-box;">
-                        
-                        <input type="range" id="budget-range" 
-                               min="50000" max="3000000" step="50000" 
-                               value="{{ request.GET.budget|default:'500000' }}" 
-                               style="width:100%; cursor:pointer;">
+                    <label style="margin-bottom:8px; display:block;">Budget Range (₦)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex:1;">
+                            <label style="font-size:0.8rem; color:#666;">Min</label>
+                            <input type="number" name="min_budget" class="form-control" placeholder="Min" min="0" value="{{ request.GET.min_budget }}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-size:0.8rem; color:#666;">Max</label>
+                            <input type="number" name="max_budget" class="form-control" placeholder="Max" min="0" value="{{ request.GET.max_budget }}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        </div>
                     </div>
                 </div>
                 
@@ -102,18 +97,5 @@
     <div class="modal-backdrop" onclick="closeModal('filter-modal')"></div>
 </div>
 
-<script>
-    const bInput = document.getElementById('budget-input');
-    const bRange = document.getElementById('budget-range');
 
-    if(bInput && bRange) {
-        bRange.addEventListener('input', (e) => {
-            bInput.value = e.target.value;
-        });
-
-        bInput.addEventListener('input', (e) => {
-            bRange.value = e.target.value;
-        });
-    }
-</script>
 {% endblock %}

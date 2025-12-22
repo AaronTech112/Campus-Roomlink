@@ -34,9 +34,13 @@ def houses(request):
             Q(description__icontains=q)
         )
     
-    budget = request.GET.get('budget')
-    if budget:
-        houses = houses.filter(rent__lte=budget)
+    min_budget = request.GET.get('min_budget')
+    max_budget = request.GET.get('max_budget')
+    
+    if min_budget:
+        houses = houses.filter(rent__gte=min_budget)
+    if max_budget:
+        houses = houses.filter(rent__lte=max_budget)
 
     return render(request, 'houses.html', {'houses': houses})
 
