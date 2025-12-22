@@ -43,7 +43,7 @@
                                 <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(50% Share)</span>
                                 {% endif %}
                             </div>
-                            <small style="color:var(--text-muted); font-size:0.75rem; white-space:nowrap;">{{ house.created_at|timesince }} ago</small>
+                            <small style="color:var(--text-muted); font-size:0.75rem; white-space:nowrap;">{{ house.simple_timesince }} ago</small>
                         </div>
                         <h3 style="font-size:1rem; font-weight:600; margin:4px 0; color:var(--text-main); display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">{{ house.title }}</h3>
                         <div class="card-meta">{{ house.get_listing_type_display }} • {{ house.location }}</div>

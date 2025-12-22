@@ -108,6 +108,21 @@ class Listing(models.Model):
         return []
 
     @property
+    def simple_timesince(self):
+        from django.utils.timesince import timesince
+        from django.utils import timezone
+        
+        now = timezone.now()
+        diff = now - self.created_at
+
+        if diff.days >= 1:
+            return f"{diff.days} day{'s' if diff.days > 1 else ''}"
+        
+        # If less than a day, let default timesince handle it (it usually returns 'X hours, Y minutes')
+        # We can just take the first part
+        return timesince(self.created_at).split(',')[0]
+
+    @property
     def verification_badge(self):
         if self.is_verified_listing:
             return "Verified Listing"
