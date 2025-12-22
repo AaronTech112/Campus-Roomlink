@@ -357,3 +357,41 @@ input:focus, textarea:focus { outline: 2px solid var(--primary); border-color: t
 .profile-menu { display: flex; flex-direction: column; gap: 4px; }
 .menu-item { display: flex; align-items: center; gap: 12px; padding: 16px; background: white; border-radius: var(--radius-sm); border: 1px solid transparent; font-weight: 500; cursor: pointer; }
 .menu-item:hover { background: #f1f5f9; }
+
+/* Home Filter Tabs */
+.filter-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px; /* Space for scrollbar if any */
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+}
+.filter-tabs::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari */
+}
+
+.filter-tab {
+    padding: 8px 20px;
+    border-radius: 20px;
+    background: #f1f5f9;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.filter-tab.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.filter-tab:hover:not(.active) {
+    background: #e2e8f0;
+    color: var(--text-main);
+}
+

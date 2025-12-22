@@ -19,10 +19,10 @@
 
     <div class="featured-section">
         <!-- Filter Tabs -->
-        <div class="filter-tabs">
-            <button class="filter-tab active" onclick="filterFeed('all', this)">All</button>
-            <button class="filter-tab" onclick="filterFeed('house', this)">Houses</button>
-            <button class="filter-tab" onclick="filterFeed('roommate', this)">Roommates</button>
+        <div class="filter-tabs" style="display:flex; gap:12px; margin-bottom:20px; overflow-x:auto; padding-bottom:4px;">
+            <button class="chip" style="cursor:pointer; background:var(--primary); color:white; border-color:var(--primary);" onclick="filterFeed('all', this)">All</button>
+            <button class="chip" style="cursor:pointer;" onclick="filterFeed('house', this)">Houses</button>
+            <button class="chip" style="cursor:pointer;" onclick="filterFeed('roommate', this)">Roommates</button>
         </div>
 
         <!-- Vertical Feed -->
