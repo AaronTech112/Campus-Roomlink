@@ -12,7 +12,7 @@ def home(request):
     # Featured listings: Verified listings first, then recent
     featured_houses = Listing.objects.all().order_by(
         '-is_verified_listing', '-created_at'
-    )[:5]
+    )[:20]
     return render(request, 'home.html', {'featured_houses': featured_houses})
 
 def houses(request):

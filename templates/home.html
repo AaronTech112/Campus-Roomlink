@@ -18,15 +18,19 @@
     </div>
 
     <div class="featured-section">
-        <div class="section-header">
-            <h2>New Listings</h2>
-            <a href="{% url 'houses' %}" class="btn-link">See all</a>
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterFeed('all', this)">All</button>
+            <button class="filter-tab" onclick="filterFeed('house', this)">Houses</button>
+            <button class="filter-tab" onclick="filterFeed('roommate', this)">Roommates</button>
         </div>
-        <div class="horizontal-scroll" id="home-featured-list">
+
+        <!-- Vertical Feed -->
+        <div class="vertical-feed" id="home-feed-list">
             
             <!-- Django Loop for Featured Listings -->
             {% for house in featured_houses %}
-            <a href="{% url 'listing_detail' house.id %}" class="card-link">
+            <a href="{% url 'listing_detail' house.id %}" class="card-link" data-type="{{ house.listing_type }}">
                 <div class="card">
                     {% if house.image %}
                     <img src="{{ house.image.url }}" class="card-image" alt="{{ house.title }}">
@@ -74,12 +78,57 @@
                 </div>
             </a>
             {% empty %}
-            <!-- Skeleton/Empty State if no data (mocking skeletons for now) -->
-            <div class="skeleton-card"></div>
-            <div class="skeleton-card"></div>
+            <!-- Empty State -->
+            <div style="text-align:center; padding:40px 20px;">
+                <div style="background:#f0f9ff; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; color:var(--primary);">
+                    <i class="ph ph-house-line" style="font-size:2rem;"></i>
+                </div>
+                <h3 style="margin-bottom:8px;">No listings yet around your campus</h3>
+                <p style="margin-bottom:20px;">Be the first to post and help others find a place!</p>
+                <a href="{% url 'post' %}" class="btn btn-primary">Post Listing</a>
+            </div>
             {% endfor %}
 
         </div>
+        
+        <!-- View More Button -->
+        <div style="margin-top:30px; text-align:center;" id="view-more-container">
+            <a href="{% url 'houses' %}" class="btn btn-secondary btn-block" id="view-more-btn">View more listings</a>
+        </div>
     </div>
 </section>
+
+<script>
+    function filterFeed(type, btn) {
+        // Update active tab
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Filter cards
+        const cards = document.querySelectorAll('.card-link');
+        let count = 0;
+        
+        cards.forEach(card => {
+            if (type === 'all' || card.dataset.type === type) {
+                card.style.display = 'block';
+                count++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Update View More Link based on filter
+        const viewMoreBtn = document.getElementById('view-more-btn');
+        if(type === 'house') {
+            viewMoreBtn.href = "{% url 'houses' %}";
+            viewMoreBtn.textContent = "View more houses";
+        } else if (type === 'roommate') {
+            viewMoreBtn.href = "{% url 'roommates' %}";
+            viewMoreBtn.textContent = "View more roommates";
+        } else {
+            viewMoreBtn.href = "{% url 'houses' %}";
+            viewMoreBtn.textContent = "View more listings";
+        }
+    }
+</script>
 {% endblock %}

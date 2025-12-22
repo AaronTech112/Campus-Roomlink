@@ -99,6 +99,44 @@ a { text-decoration: none; color: inherit; }
 .horizontal-scroll { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; margin: 0 -20px; padding: 0 20px 10px; }
 .horizontal-scroll::-webkit-scrollbar { display: none; }
 
+/* Filter Tabs */
+.filter-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+.filter-tab {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+.filter-tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+.vertical-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.vertical-feed .card-link {
+    display: block;
+    width: 100%;
+}
+
 /* Cards */
 .card-link { display: block; min-width: 280px; scroll-snap-align: start; }
 .card {
