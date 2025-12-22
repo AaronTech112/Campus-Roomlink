@@ -72,8 +72,22 @@
         <form method="GET" action="{% url 'houses' %}">
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Maximum Budget: ₦<span id="budget-val">{{ request.GET.budget|default:"500000"|intcomma }}</span></label>
-                    <input type="range" name="budget" id="budget-range" min="50000" max="2000000" step="50000" value="{{ request.GET.budget|default:'500000' }}" oninput="updateBudgetLabel(this.value)">
+                    <label style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        Maximum Budget (₦)
+                    </label>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <input type="number" name="budget" id="budget-input" 
+                               class="form-control" 
+                               placeholder="Enter amount"
+                               min="0"
+                               value="{{ request.GET.budget|default:'500000' }}"
+                               style="padding:12px; border:1px solid #ddd; border-radius:8px; font-size:1rem; width:100%; box-sizing:border-box;">
+                        
+                        <input type="range" id="budget-range" 
+                               min="50000" max="3000000" step="50000" 
+                               value="{{ request.GET.budget|default:'500000' }}" 
+                               style="width:100%; cursor:pointer;">
+                    </div>
                 </div>
                 
                 {% if request.GET.q %}
@@ -89,8 +103,17 @@
 </div>
 
 <script>
-    function updateBudgetLabel(val) {
-        document.getElementById('budget-val').innerText = Number(val).toLocaleString();
+    const bInput = document.getElementById('budget-input');
+    const bRange = document.getElementById('budget-range');
+
+    if(bInput && bRange) {
+        bRange.addEventListener('input', (e) => {
+            bInput.value = e.target.value;
+        });
+
+        bInput.addEventListener('input', (e) => {
+            bRange.value = e.target.value;
+        });
     }
 </script>
 {% endblock %}
