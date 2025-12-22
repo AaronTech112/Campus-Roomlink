@@ -20,9 +20,9 @@
     <div class="featured-section">
         <!-- Filter Tabs -->
         <div class="filter-tabs" style="display:flex; gap:12px; margin-bottom:20px; overflow-x:auto; padding-bottom:4px;">
-            <button class="chip" style="cursor:pointer; background:var(--primary); color:white; border-color:var(--primary);" onclick="filterFeed('all', this)">All</button>
-            <button class="chip" style="cursor:pointer;" onclick="filterFeed('house', this)">Houses</button>
-            <button class="chip" style="cursor:pointer;" onclick="filterFeed('roommate', this)">Roommates</button>
+            <button class="chip home-filter-chip" style="cursor:pointer; background:var(--primary); color:white; border-color:var(--primary);" onclick="filterFeed('all', this)">All</button>
+            <button class="chip home-filter-chip" style="cursor:pointer;" onclick="filterFeed('house', this)">Houses</button>
+            <button class="chip home-filter-chip" style="cursor:pointer;" onclick="filterFeed('roommate', this)">Roommates</button>
         </div>
 
         <!-- Vertical Feed -->
@@ -100,9 +100,17 @@
 
 <script>
     function filterFeed(type, btn) {
-        // Update active tab
-        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
+        // Reset all filter chips to default style (Inactive)
+        document.querySelectorAll('.home-filter-chip').forEach(t => {
+            t.style.background = 'white';
+            t.style.color = 'var(--text-muted)'; 
+            t.style.borderColor = 'var(--border-color)';
+        });
+
+        // Set active style for clicked button (Active)
+        btn.style.background = 'var(--primary)';
+        btn.style.color = 'white';
+        btn.style.borderColor = 'var(--primary)';
 
         // Filter cards
         const cards = document.querySelectorAll('.card-link');
