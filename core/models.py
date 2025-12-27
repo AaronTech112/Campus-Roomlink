@@ -45,6 +45,9 @@ class User(AbstractUser):
     # Secure upload for ID/Admission Letter
     verification_document = models.FileField(upload_to='verification_docs/', blank=True, null=True)
 
+    # Profile Picture
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name', 'phone_number']
 

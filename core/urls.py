@@ -18,6 +18,7 @@ urlpatterns = [
     path('post/', views.post_listing, name='post'),
     path('post-listing/', views.post_listing, name='post_listing'),
     path('profile/', views.profile, name='profile'),
+    path('profile/update-avatar/', views.update_avatar, name='update_avatar'),
     path('upload-verification/', views.upload_verification, name='upload_verification'),
     
     path('my-listings/', views.my_listings, name='my_listings'),

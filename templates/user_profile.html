@@ -4,7 +4,11 @@
 {% block content %}
 <section id="user-profile-screen" class="screen-page">
     <div class="profile-header-card" style="text-align:center; padding:32px 20px; background:white; border-bottom:1px solid #eee;">
-        <img src="https://ui-avatars.com/api/?name={{ profile_user.full_name|urlencode }}&background=random&size=128" class="profile-avatar-large" alt="{{ profile_user.full_name }}">
+        {% if profile_user.profile_picture %}
+            <img src="{{ profile_user.profile_picture.url }}" class="profile-avatar-large" alt="{{ profile_user.full_name }}" style="object-fit:cover;">
+        {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ profile_user.full_name|urlencode }}&background=random&size=128" class="profile-avatar-large" alt="{{ profile_user.full_name }}">
+        {% endif %}
         
         <h2 style="margin-top:16px; margin-bottom:4px;">{{ profile_user.full_name }}</h2>
         

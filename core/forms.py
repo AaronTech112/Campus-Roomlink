@@ -87,7 +87,7 @@ class VerificationForm(forms.ModelForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['full_name', 'email', 'phone_number', 'department', 'matric_number']
+        fields = ['full_name', 'email', 'phone_number', 'department', 'matric_number', 'profile_picture']
         widgets = {
             'matric_number': forms.TextInput(attrs={'placeholder': '2023/CP/CSC/0034'}),
         }
@@ -99,6 +99,11 @@ class ProfileUpdateForm(forms.ModelForm):
                 raise forms.ValidationError("Matric number must be exactly 16 characters.")
         return matric_number
         
+class UpdateAvatarForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['profile_picture']
+
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 

@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Listing, User, ListingImage
-from .forms import SignupForm, LoginForm, ListingForm, VerificationForm, ProfileUpdateForm
+from .forms import SignupForm, LoginForm, ListingForm, VerificationForm, ProfileUpdateForm, UpdateAvatarForm
 from django.db.models import Case, When, Value, IntegerField, Q
 
 # --- Public Views ---
@@ -132,6 +132,17 @@ def profile(request):
     return render(request, 'profile.html', {'user_listings': user_listings})
 
 @login_required
+def update_avatar(request):
+    if request.method == 'POST':
+        form = UpdateAvatarForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile picture updated!")
+        else:
+            messages.error(request, "Error updating profile picture.")
+    return redirect('profile')
+
+@login_required
 def post_listing(request):
     if request.method == 'POST':
         form = ListingForm(request.POST, request.FILES)
@@ -234,7 +245,7 @@ def delete_listing(request, id):
 @login_required
 def settings(request):
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, instance=request.user)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "Profile updated successfully.")

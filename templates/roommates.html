@@ -40,6 +40,8 @@
         <div class="roommate-card" onclick="location.href='{% url 'listing_detail' roomie.id %}'" style="cursor: pointer;">
             {% if roomie.image %}
             <img src="{{ roomie.image.url }}" class="roommate-avatar" style="object-fit:cover;" alt="{{ roomie.posted_by.full_name }}">
+            {% elif roomie.posted_by.profile_picture %}
+            <img src="{{ roomie.posted_by.profile_picture.url }}" class="roommate-avatar" style="object-fit:cover;" alt="{{ roomie.posted_by.full_name }}">
             {% else %}
             <img src="https://ui-avatars.com/api/?name={{ roomie.posted_by.full_name|urlencode }}&background=random" class="roommate-avatar" alt="{{ roomie.posted_by.full_name }}">
             {% endif %}

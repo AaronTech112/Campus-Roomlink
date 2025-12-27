@@ -4,9 +4,26 @@
 {% block content %}
 <section id="profile-screen" class="screen-page">
     <div class="profile-header">
-        <div class="avatar-large">
-            <img src="https://ui-avatars.com/api/?name={{ user.full_name|urlencode }}&background=2563EB&color=fff" alt="User">
+        <div style="position: relative; display: inline-block; margin-bottom: 12px;">
+            <div class="avatar-large" style="margin-bottom: 0;">
+                {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="User" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                {% else %}
+                    <img src="https://ui-avatars.com/api/?name={{ user.full_name|urlencode }}&background=2563EB&color=fff" alt="User">
+                {% endif %}
+            </div>
+            
+            <button onclick="document.getElementById('avatar-upload').click()" 
+                    style="position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; border: 2px solid white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10;">
+                <i class="ph-fill ph-pencil-simple"></i>
+            </button>
         </div>
+
+        <form id="avatar-form" action="{% url 'update_avatar' %}" method="POST" enctype="multipart/form-data" style="display: none;">
+            {% csrf_token %}
+            <input type="file" name="profile_picture" id="avatar-upload" accept="image/*" onchange="document.getElementById('avatar-form').submit()">
+        </form>
+
         <h3>{{ user.full_name }}</h3>
         <p style="font-size:0.9rem; color:var(--text-muted);">{{ user.email }}</p>
         
