@@ -28,7 +28,7 @@
 
             <div class="form-group">
                 <label>Price / Budget (₦)</label>
-                <input type="number" name="rent" placeholder="e.g. 150000" required value="{{ form.rent.value|default:'' }}">
+                <input type="text" inputmode="numeric" id="rent-input" name="rent" placeholder="e.g. 150,000" required value="{{ form.rent.value|default:'' }}">
             </div>
 
             <div class="form-group">
@@ -197,6 +197,42 @@
     }
     
     // Run on load to set initial state
-    document.addEventListener('DOMContentLoaded', toggleFields);
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleFields();
+        
+        // Price Formatting Logic
+        const rentInput = document.getElementById('rent-input');
+        const form = document.querySelector('form');
+
+        if (rentInput) {
+            // Format on load if value exists (handle potential decimal from backend)
+            if (rentInput.value) {
+                formatPrice(rentInput);
+            }
+
+            rentInput.addEventListener('input', function(e) {
+                formatPrice(this);
+            });
+
+            form.addEventListener('submit', function() {
+                // Strip commas before submit so backend gets raw number
+                rentInput.value = rentInput.value.replace(/,/g, '');
+            });
+        }
+
+        function formatPrice(input) {
+            // Handle values like "150000.00" by taking only the integer part first
+            let rawValue = input.value.split('.')[0]; 
+            // Remove non-digits
+            let value = rawValue.replace(/[^\d]/g, '');
+            
+            if (value) {
+                // Format with commas
+                input.value = parseInt(value).toLocaleString('en-US');
+            } else {
+                input.value = '';
+            }
+        }
+    });
 </script>
 {% endblock %}
