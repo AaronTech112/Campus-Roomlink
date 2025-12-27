@@ -32,13 +32,21 @@
             {% for house in featured_houses %}
             <a href="{% url 'listing_detail' house.id %}" class="card-link" data-type="{{ house.listing_type }}">
                 <div class="card">
-                    {% if house.image %}
-                    <img src="{{ house.image.url }}" class="card-image" alt="{{ house.title }}">
-                    {% else %}
-                    <div class="card-image" style="background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#aaa;">
-                        <i class="ph ph-image" style="font-size:2rem;"></i>
+                    <div style="position:relative;">
+                        {% if house.image %}
+                        <img src="{{ house.image.url }}" class="card-image" alt="{{ house.title }}">
+                        {% else %}
+                        <div class="card-image" style="background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#aaa;">
+                            <i class="ph ph-image" style="font-size:2rem;"></i>
+                        </div>
+                        {% endif %}
+                        
+                        {% if house.videos.exists %}
+                        <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); color:white; padding:4px 8px; border-radius:12px; font-size:0.75rem; display:flex; align-items:center; gap:4px; backdrop-filter: blur(4px);">
+                            <i class="ph-fill ph-video-camera"></i> Video
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                     <div class="card-content">
                         <div style="display:flex; justify-content:space-between; align-items:start;">
                             <div class="card-price">

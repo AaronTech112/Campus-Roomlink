@@ -122,6 +122,7 @@ class MultipleFileField(forms.FileField):
 class ListingForm(forms.ModelForm):
     title = forms.CharField(required=False) # Make title optional as it's not needed for Roommate requests
     images = MultipleFileField(widget=MultipleFileInput(attrs={'multiple': True}), required=False, label="Upload Images (Select multiple)")
+    videos = MultipleFileField(widget=MultipleFileInput(attrs={'multiple': True, 'accept': 'video/*'}), required=False, label="Upload Videos (Optional, Max 2)")
 
     class Meta:
         model = Listing
@@ -130,3 +131,14 @@ class ListingForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe the house or roommate request...'}),
             'image': forms.HiddenInput(), # Hide the single image field, we will handle it in the view
         }
+    
+    def clean_videos(self):
+        videos = self.cleaned_data.get('videos')
+        if videos:
+            if len(videos) > 2:
+                raise forms.ValidationError("You can upload a maximum of 2 videos.")
+            
+            for video in videos:
+                if video.size > 20 * 1024 * 1024:
+                    raise forms.ValidationError(f"Video {video.name} exceeds the 20MB limit.")
+        return videos

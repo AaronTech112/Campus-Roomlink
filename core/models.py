@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+from .validators import validate_video_size
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -140,3 +142,12 @@ class ListingImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.listing.title}"
+
+class ListingVideo(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='videos')
+    video = models.FileField(upload_to='listing_videos/', validators=[validate_video_size])
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_approved = models.BooleanField(default=True) # Auto-approve for now, ready for moderation
+
+    def __str__(self):
+        return f"Video for {self.listing.title}"

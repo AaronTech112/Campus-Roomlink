@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Listing, User, ListingImage
+from .models import Listing, User, ListingImage, ListingVideo
 from .forms import SignupForm, LoginForm, ListingForm, VerificationForm, ProfileUpdateForm, UpdateAvatarForm
 from django.db.models import Case, When, Value, IntegerField, Q
 
@@ -174,6 +174,12 @@ def post_listing(request):
                 for img in images:
                     ListingImage.objects.create(listing=listing, image=img)
 
+            # Handle videos
+            videos = request.FILES.getlist('videos')
+            if videos:
+                for video in videos:
+                    ListingVideo.objects.create(listing=listing, video=video)
+
             messages.success(request, "Listing posted successfully!")
             
             # Redirect based on type
@@ -221,6 +227,21 @@ def edit_listing(request, id):
                 # Add to gallery
                 for img in images:
                     ListingImage.objects.create(listing=listing, image=img)
+            
+            # Handle video deletion
+            delete_video_ids = request.POST.getlist('delete_videos')
+            if delete_video_ids:
+                ListingVideo.objects.filter(id__in=delete_video_ids, listing=listing).delete()
+
+            # Handle new videos
+            videos = request.FILES.getlist('videos')
+            if videos:
+                current_video_count = listing.videos.count()
+                if current_video_count + len(videos) > 2:
+                    messages.warning(request, f"You can only have 2 videos. You already have {current_video_count}.")
+                else:
+                    for video in videos:
+                        ListingVideo.objects.create(listing=listing, video=video)
             
             # Handle multi-select interests for roommates
             if listing.listing_type == 'roommate':

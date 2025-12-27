@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Listing, ListingImage
+from .models import Listing, User, ListingImage, ListingVideo
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 class CustomUserAdmin(UserAdmin):
@@ -44,11 +44,15 @@ class ListingImageInline(admin.TabularInline):
     model = ListingImage
     extra = 1
 
+class ListingVideoInline(admin.TabularInline):
+    model = ListingVideo
+    extra = 1
+
 class ListingAdmin(admin.ModelAdmin):
     list_display = ('title', 'listing_type', 'posted_by', 'is_verified_listing', 'created_at')
     list_filter = ('listing_type', 'is_verified_listing')
     search_fields = ('title', 'location', 'posted_by__email')
-    inlines = [ListingImageInline]
+    inlines = [ListingImageInline, ListingVideoInline]
     
     actions = ['verify_listings']
 
