@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="post-screen" class="screen-page">
+    <div class="post-container">
+        <h2>{% if is_edit %}Edit Listing{% else %}Post a Listing{% endif %}</h2>
+        <p>{% if is_edit %}Update your listing details{% else %}What are you looking for?{% endif %}</p>
+        
+        <form method="POST" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Listing Type</label>
+                <div class="segment-control">
+                    <input type="radio" name="listing_type" id="type-house" value="house" {% if form.listing_type.value == 'house' or not form.listing_type.value %}checked{% endif %} onchange="toggleFields()">
+                    <label for="type-house">House</label>
+                    
+                    <input type="radio" name="listing_type" id="type-roommate" value="roommate" {% if form.listing_type.value == 'roommate' %}checked{% endif %} onchange="toggleFields()">
+                    <label for="type-roommate">Roommate</label>
+                </div>
+            </div>
+
+            <div class="form-group" id="title-field-group">
+                <label>Listing Title</label>
+                <input type="text" name="title" placeholder="e.g. Self-contain at Akoka" value="{{ form.title.value|default:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label>Price / Budget (₦)</label>
+                <input type="text" inputmode="numeric" id="rent-input" name="rent" placeholder="e.g. 150,000" required value="{{ form.rent.value|default:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" name="location" placeholder="e.g. Yaba, Akoka" required value="{{ form.location.value|default:'' }}">
+            </div>
+
+            <!-- Roommate Specific Fields (Hidden by default) -->
+            <div id="roommate-fields" style="display:none;">
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender_preference" id="gender-input" class="form-control" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; background:white;">
+                        <option value="male" {% if form.gender_preference.value == 'male' %}selected{% endif %}>Male</option>
+                        <option value="female" {% if form.gender_preference.value == 'female' %}selected{% endif %}>Female</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Level</label>
+                    <select name="level_preference" id="level-input" class="form-control" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; background:white;">
+                        <option value="100" {% if form.level_preference.value == '100' %}selected{% endif %}>100 Lvl</option>
+                        <option value="200" {% if form.level_preference.value == '200' %}selected{% endif %}>200 Lvl</option>
+                        <option value="300" {% if form.level_preference.value == '300' %}selected{% endif %}>300 Lvl</option>
+                        <option value="400" {% if form.level_preference.value == '400' %}selected{% endif %}>400 Lvl</option>
+                        <option value="500" {% if form.level_preference.value == '500' %}selected{% endif %}>500 Lvl</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Interests / Habits (Select all that apply)</label>
+                    <div class="interests-grid">
+                        {% with interests=form.instance.interests_list %}
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Non-smoker" {% if "Non-smoker" in interests %}checked{% endif %}>
+                            <span>Non-smoker</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Christian" {% if "Christian" in interests %}checked{% endif %}>
+                            <span>Christian</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Muslim" {% if "Muslim" in interests %}checked{% endif %}>
+                            <span>Muslim</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Studious" {% if "Studious" in interests %}checked{% endif %}>
+                            <span>Studious</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Night Owl" {% if "Night Owl" in interests %}checked{% endif %}>
+                            <span>Night Owl</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Early Riser" {% if "Early Riser" in interests %}checked{% endif %}>
+                            <span>Early Riser</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Clean Freak" {% if "Clean Freak" in interests %}checked{% endif %}>
+                            <span>Clean Freak</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Gamer" {% if "Gamer" in interests %}checked{% endif %}>
+                            <span>Gamer</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Sports Fan" {% if "Sports Fan" in interests %}checked{% endif %}>
+                            <span>Sports Fan</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Music Lover" {% if "Music Lover" in interests %}checked{% endif %}>
+                            <span>Music Lover</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Pet Friendly" {% if "Pet Friendly" in interests %}checked{% endif %}>
+                            <span>Pet Friendly</span>
+                        </label>
+                        <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="No Pets" {% if "No Pets" in interests %}checked{% endif %}>
+                            <span>No Pets</span>
+                        </label>
+                         <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Introvert" {% if "Introvert" in interests %}checked{% endif %}>
+                            <span>Introvert</span>
+                        </label>
+                         <label class="interest-chip">
+                            <input type="checkbox" name="interests_list" value="Extrovert" {% if "Extrovert" in interests %}checked{% endif %}>
+                            <span>Extrovert</span>
+                        </label>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" placeholder="Describe the place or yourself..." rows="4" required>{{ form.description.value|default:'' }}</textarea>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group">
+                <label id="image-label">Photos</label>
+                {% if form.instance.image %}
+                <div style="margin-bottom: 8px;">
+                    <img src="{{ form.instance.image.url }}" style="height: 100px; border-radius: 8px;">
+                    <p style="font-size: 0.8rem; color: #666;">Current Cover Photo</p>
+                </div>
+                {% endif %}
+                <input type="file" name="images" id="image-input" accept="image/*" class="form-control" style="padding: 10px; background: white;">
+                <small id="image-help" style="display:block; margin-top:4px; color:#666;">Select multiple photos for your house listing.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">{% if is_edit %}Update Listing{% else %}Post Listing{% endif %}</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    function toggleFields() {
+        const isRoommate = document.getElementById('type-roommate').checked;
+        const roommateFields = document.getElementById('roommate-fields');
+        const titleFieldGroup = document.getElementById('title-field-group');
+        const titleInput = titleFieldGroup.querySelector('input');
+        const imageInput = document.getElementById('image-input');
+        const imageHelp = document.getElementById('image-help');
+        const imageLabel = document.getElementById('image-label');
+        
+        if (isRoommate) {
+            roommateFields.style.display = 'block';
+            titleFieldGroup.style.display = 'none';
+            titleInput.required = false; // Remove required attribute
+            
+            // Roommate: Single image usually
+            imageInput.removeAttribute('multiple');
+            imageLabel.innerText = "Profile Photo / Selfie";
+            imageHelp.innerText = "Upload a photo of yourself.";
+        } else {
+            roommateFields.style.display = 'none';
+            titleFieldGroup.style.display = 'block';
+            titleInput.required = true; // Add required attribute back
+            
+            // House: Multiple images
+            imageInput.setAttribute('multiple', 'multiple');
+            imageLabel.innerText = "House Photos";
+            imageHelp.innerText = "You can select multiple photos (Main photo + Gallery).";
+        }
+    }
+    
+    // Run on load to set initial state
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleFields();
+        
+        // Price Formatting Logic
+        const rentInput = document.getElementById('rent-input');
+        const form = document.querySelector('form');
+
+        if (rentInput) {
+            // Format on load if value exists (handle potential decimal from backend)
+            if (rentInput.value) {
+                formatPrice(rentInput);
+            }
+
+            rentInput.addEventListener('input', function(e) {
+                formatPrice(this);
+            });
+
+            form.addEventListener('submit', function() {
+                // Strip commas before submit so backend gets raw number
+                rentInput.value = rentInput.value.replace(/,/g, '');
+            });
+        }
+
+        function formatPrice(input) {
+            // Handle values like "150000.00" by taking only the integer part first
+            let rawValue = input.value.split('.')[0]; 
+            // Remove non-digits
+            let value = rawValue.replace(/[^\d]/g, '');
+            
+            if (value) {
+                // Format with commas
+                input.value = parseInt(value).toLocaleString('en-US');
+            } else {
+                input.value = '';
+            }
+        }
+    });
+</script>
+{% endblock %}

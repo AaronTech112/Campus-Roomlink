@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block header_actions %}
+<button class="btn-icon" onclick="openModal('filter-modal')">
+    <i class="ph ph-sliders-horizontal"></i>
+</button>
+{% endblock %}
+
+{% block content %}
+<section id="houses-screen" class="screen-page">
+    <div class="filter-bar">
+        <form method="GET" action="{% url 'houses' %}" class="search-input" style="width:100%; display:flex; align-items:center;">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" placeholder="Search houses, location..." name="q" value="{{ request.GET.q|default:'' }}" style="flex:1;">
+            {% if request.GET.q or request.GET.min_budget or request.GET.max_budget %}
+            <a href="{% url 'houses' %}" style="text-decoration:none; color:#555; padding: 0 10px; display:flex; align-items:center; gap:4px; border-left:1px solid #eee; height:24px; white-space:nowrap;">
+                <span style="font-size:0.9rem; font-weight:500;">Show All</span>
+                <i class="ph-fill ph-arrow-counter-clockwise" style="font-size: 1.1rem; color:#888;"></i>
+            </a>
+            {% endif %}
+        </form>
+    </div>
+    
+    <div class="listings-grid" id="houses-list">
+        {% for house in houses %}
+        <a href="{% url 'listing_detail' house.id %}" class="card-link">
+            <div class="card">
+                <div style="position:relative;">
+                    {% if house.image %}
+                    <img src="{{ house.image.url }}" class="card-image" alt="{{ house.title }}">
+                    {% else %}
+                    <div class="card-image" style="background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#aaa;">
+                        <i class="ph ph-image" style="font-size:2rem;"></i>
+                    </div>
+                    {% endif %}
+
+                    {% if house.videos.exists %}
+                    <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); color:white; padding:4px 8px; border-radius:12px; font-size:0.75rem; display:flex; align-items:center; gap:4px; backdrop-filter: blur(4px);">
+                        <i class="ph-fill ph-video-camera"></i> Video
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-content">
+                    <div style="display:flex;justify-content:space-between;align-items:start;">
+                        <div class="card-price">₦{{ house.rent|intcomma }}/yr</div>
+                        <small>{{ house.created_at|timesince }} ago</small>
+                    </div>
+                    <h3 style="font-size:1rem;margin:4px 0;">{{ house.title }}</h3>
+                    <div class="card-meta"><i class="ph ph-map-pin"></i> {{ house.location }}</div>
+                    <div style="margin-top:8px; display:flex; gap:4px; flex-wrap:wrap;">
+                        {% if house.is_verified_listing %}
+                        <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
+                        {% else %}
+                        <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified Listing</span>
+                        {% endif %}
+
+                        {% if house.posted_by.is_verified_student %}
+                        <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Verified Student</span>
+                        {% else %}
+                        <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p>No houses found matching your criteria.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Filter Modal (Client-side interaction, triggers GET param reload or JS filter) -->
+<div id="filter-modal" class="modal">
+    <div class="modal-content slide-up">
+        <div class="modal-header">
+            <h3>Filters</h3>
+            <button class="btn-icon" onclick="closeModal('filter-modal')"><i class="ph ph-x"></i></button>
+        </div>
+        <form method="GET" action="{% url 'houses' %}">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label style="margin-bottom:8px; display:block;">Budget Range (₦)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex:1;">
+                            <label style="font-size:0.8rem; color:#666;">Min</label>
+                            <input type="number" name="min_budget" class="form-control" placeholder="Min" min="0" value="{{ request.GET.min_budget }}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-size:0.8rem; color:#666;">Max</label>
+                            <input type="number" name="max_budget" class="form-control" placeholder="Max" min="0" value="{{ request.GET.max_budget }}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        </div>
+                    </div>
+                </div>
+                
+                {% if request.GET.q %}
+                <input type="hidden" name="q" value="{{ request.GET.q }}">
+                {% endif %}
+            </div>
+            <div class="modal-footer" style="display:flex; gap:10px;">
+                <a href="{% url 'houses' %}" class="btn" style="flex:1; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; border:1px solid #ddd; background:#fff; color:#333;">Reset</a>
+                <button type="submit" class="btn btn-primary" style="flex:2;">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+    <div class="modal-backdrop" onclick="closeModal('filter-modal')"></div>
+</div>
+
+
+{% endblock %}

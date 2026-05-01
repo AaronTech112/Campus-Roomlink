@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="screen-page">
+    <div class="post-container">
+        <h2>Verify Student Status</h2>
+        <p>Upload your School ID or Admission Letter to get the Verified Badge.</p>
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Document (PDF or Image)</label>
+                {{ form.verification_document }}
+                <small style="display:block; margin-top:4px; color:var(--text-muted);">
+                    Your document is stored securely and only visible to admins.
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Submit for Review</button>
+            <a href="{% url 'profile' %}" class="btn btn-secondary btn-block" style="margin-top:10px; text-decoration:none;">Cancel</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

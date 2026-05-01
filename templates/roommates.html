@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block header_actions %}
+<button class="btn-icon" onclick="openModal('filter-modal')">
+    <i class="ph ph-sliders-horizontal"></i>
+</button>
+{% endblock %}
+
+{% block content %}
+<section id="roommates-screen" class="screen-page">
+    <div class="filter-bar">
+        <form method="GET" action="{% url 'roommates' %}" class="search-input" style="width:100%; display:flex; align-items:center;">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" placeholder="Search by lifestyle, budget..." name="q" value="{{ request.GET.q|default:'' }}" style="flex:1;">
+            {% if request.GET.q or request.GET.min_budget or request.GET.max_budget or request.GET.gender %}
+            <a href="{% url 'roommates' %}" style="text-decoration:none; color:#555; padding: 0 10px; display:flex; align-items:center; gap:4px; border-left:1px solid #eee; height:24px; white-space:nowrap;">
+                <span style="font-size:0.9rem; font-weight:500;">Show All</span>
+                <i class="ph-fill ph-arrow-counter-clockwise" style="font-size: 1.1rem; color:#888;"></i>
+            </a>
+            {% endif %}
+        </form>
+        
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <a href="?gender=male{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_budget %}&min_budget={{ request.GET.min_budget }}{% endif %}{% if request.GET.max_budget %}&max_budget={{ request.GET.max_budget }}{% endif %}" 
+               class="btn" 
+               style="flex:1; padding:8px; font-size:0.9rem; {% if request.GET.gender == 'male' %}background:var(--primary); color:white;{% else %}background:white; border:1px solid #ddd;{% endif %}">
+               Male
+            </a>
+            <a href="?gender=female{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.min_budget %}&min_budget={{ request.GET.min_budget }}{% endif %}{% if request.GET.max_budget %}&max_budget={{ request.GET.max_budget }}{% endif %}" 
+               class="btn" 
+               style="flex:1; padding:8px; font-size:0.9rem; {% if request.GET.gender == 'female' %}background:var(--primary); color:white;{% else %}background:white; border:1px solid #ddd;{% endif %}">
+               Female
+            </a>
+        </div>
+    </div>
+    
+    <div class="roommates-list" id="roommates-list">
+        {% for roomie in roommates %}
+        <div class="roommate-card" onclick="location.href='{% url 'listing_detail' roomie.id %}'" style="cursor: pointer;">
+            {% if roomie.image %}
+            <img src="{{ roomie.image.url }}" class="roommate-avatar" style="object-fit:cover;" alt="{{ roomie.posted_by.full_name }}">
+            {% elif roomie.posted_by.profile_picture %}
+            <img src="{{ roomie.posted_by.profile_picture.url }}" class="roommate-avatar" style="object-fit:cover;" alt="{{ roomie.posted_by.full_name }}">
+            {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ roomie.posted_by.full_name|urlencode }}&background=random" class="roommate-avatar" alt="{{ roomie.posted_by.full_name }}">
+            {% endif %}
+            <div class="roommate-info">
+                <h3>{{ roomie.posted_by.full_name }}</h3>
+                
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">
+                    {% if roomie.gender_preference %}{{ roomie.get_gender_preference_display }}{% endif %}
+                    {% if roomie.gender_preference and roomie.level_preference %} • {% endif %}
+                    {% if roomie.level_preference %}{{ roomie.get_level_preference_display }}{% endif %}
+                    {% if roomie.posted_by.department %} • {{ roomie.posted_by.department }}{% endif %}
+                </p>
+
+                <p style="font-size:0.85rem; color:var(--primary); font-weight:500;">Budget: ₦{{ roomie.rent|intcomma }} <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(50% Share)</span></p>
+                <p style="font-size:0.8rem; margin-bottom:6px;">Location: {{ roomie.location }}</p>
+                
+                {% if roomie.interests_list %}
+                <div class="tags" style="margin-bottom:8px;">
+                    {% for interest in roomie.interests_list|slice:":3" %}
+                    <span class="tag" style="font-size:0.7rem; padding:2px 6px;">{{ interest }}</span>
+                    {% endfor %}
+                    {% if roomie.interests_list|length > 3 %}
+                    <span class="tag" style="font-size:0.7rem; padding:2px 6px;">+{{ roomie.interests_list|length|add:"-3" }}</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <div style="margin-top:4px; display:flex; gap:4px; flex-wrap:wrap;">
+                     {% if roomie.posted_by.is_verified_student %}
+                     <span class="badge" style="background:#e0f2fe; color:#0284c7; font-size:0.7rem;"><i class="ph-fill ph-student"></i> Verified Student</span>
+                     {% else %}
+                     <span class="badge" style="background:#FEF3C7; color:#B45309; font-size:0.7rem;">Unverified Student</span>
+                     {% endif %}
+                </div>
+            </div>
+            <a href="https://wa.me/{{ roomie.posted_by.whatsapp_link }}?text=Hello {{ roomie.posted_by.full_name }}, saw your profile on RoomLink!" target="_blank" class="btn-icon" style="color:#25D366; border-color:#25D366;" onclick="event.stopPropagation()">
+                <i class="ph-fill ph-whatsapp-logo"></i>
+            </a>
+        </div>
+        {% empty %}
+        <p>No roommates found.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Filter Modal (Client-side interaction, triggers GET param reload or JS filter) -->
+<div id="filter-modal" class="modal">
+    <div class="modal-content slide-up">
+        <div class="modal-header">
+            <h3>Filters</h3>
+            <button class="btn-icon" onclick="closeModal('filter-modal')"><i class="ph ph-x"></i></button>
+        </div>
+        <form method="GET" action="{% url 'roommates' %}">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label style="margin-bottom:8px; display:block;">Budget Range (₦)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex:1;">
+                            <label style="font-size:0.8rem; color:#666;">Min</label>
+                            <input type="number" name="min_budget" class="form-control" placeholder="Min" min="0" value="{{ request.GET.min_budget }}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-size:0.8rem; color:#666;">Max</label>
+                            <input type="number" name="max_budget" class="form-control" placeholder="Max" min="0" value="{{ request.GET.max_budget }}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                        </div>
+                    </div>
+                </div>
+                
+                {% if request.GET.q %}
+                <input type="hidden" name="q" value="{{ request.GET.q }}">
+                {% endif %}
+                
+                {% if request.GET.gender %}
+                <input type="hidden" name="gender" value="{{ request.GET.gender }}">
+                {% endif %}
+            </div>
+            <div class="modal-footer" style="display:flex; gap:10px;">
+                <a href="{% url 'roommates' %}" class="btn" style="flex:1; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; border:1px solid #ddd; background:#fff; color:#333;">Reset</a>
+                <button type="submit" class="btn btn-primary" style="flex:2;">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+    <div class="modal-backdrop" onclick="closeModal('filter-modal')"></div>
+</div>
+{% endblock %}

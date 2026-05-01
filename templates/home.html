@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block content %}
+<section id="home-screen" class="screen-page">
+    <div class="hero">
+        <h1>Find off-campus houses & roommates around your campus</h1>
+        <p class="trust-note"><i class="ph-fill ph-shield-check"></i> Built for students • Verified listings</p>
+        
+        <div class="hero-actions">
+            <a href="{% url 'houses' %}" class="btn btn-primary btn-large text-decoration-none">
+                <i class="ph ph-house-line"></i> Find a House
+            </a>
+            <a href="{% url 'roommates' %}" class="btn btn-secondary btn-large text-decoration-none">
+                <i class="ph ph-users"></i> Find a Roommate
+            </a>
+        </div>
+    </div>
+
+    <div class="featured-section">
+        <!-- Filter Tabs -->
+        <div class="filter-tabs" style="display:flex; gap:12px; margin-bottom:20px; overflow-x:auto; padding-bottom:4px;">
+            <button class="chip home-filter-chip" style="cursor:pointer; background:var(--primary); color:white; border-color:var(--primary);" onclick="filterFeed('all', this)">All</button>
+            <button class="chip home-filter-chip" style="cursor:pointer;" onclick="filterFeed('house', this)">Houses</button>
+            <button class="chip home-filter-chip" style="cursor:pointer;" onclick="filterFeed('roommate', this)">Roommates</button>
+        </div>
+
+        <!-- Vertical Feed -->
+        <div class="vertical-feed" id="home-feed-list">
+            
+            <!-- Django Loop for Featured Listings -->
+            {% for house in featured_houses %}
+            <a href="{% url 'listing_detail' house.id %}" class="card-link" data-type="{{ house.listing_type }}">
+                <div class="card">
+                    <div style="position:relative;">
+                        {% if house.image %}
+                        <img src="{{ house.image.url }}" class="card-image" alt="{{ house.title }}">
+                        {% else %}
+                        <div class="card-image" style="background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#aaa;">
+                            <i class="ph ph-image" style="font-size:2rem;"></i>
+                        </div>
+                        {% endif %}
+                        
+                        {% if house.videos.exists %}
+                        <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); color:white; padding:4px 8px; border-radius:12px; font-size:0.75rem; display:flex; align-items:center; gap:4px; backdrop-filter: blur(4px);">
+                            <i class="ph-fill ph-video-camera"></i> Video
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-content">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <div class="card-price">
+                                ₦{{ house.rent|intcomma }}/yr
+                                {% if house.listing_type == 'roommate' %}
+                                <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(50% Share)</span>
+                                {% endif %}
+                            </div>
+                            <small style="color:var(--text-muted); font-size:0.75rem; white-space:nowrap;">{{ house.created_at|timesince }} ago</small>
+                        </div>
+                        <h3 style="font-size:1rem; font-weight:600; margin:4px 0; color:var(--text-main); display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">{{ house.title }}</h3>
+                        <div class="card-meta">{{ house.get_listing_type_display }} • {{ house.location }}</div>
+                        <div style="margin-top:8px; display:flex; gap:4px; flex-wrap:wrap;">
+                            {% if house.listing_type == 'roommate' %}
+                                <!-- Roommate: Show ONLY User Status -->
+                                {% if house.posted_by.is_verified_student %}
+                                <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Verified Student</span>
+                                {% else %}
+                                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+                                {% endif %}
+                            {% else %}
+                                <!-- House: Show Both Statuses -->
+                                {% if house.is_verified_listing %}
+                                <span class="badge badge-verified"><i class="ph-fill ph-seal-check"></i> Verified Listing</span>
+                                {% else %}
+                                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified Listing</span>
+                                {% endif %}
+                                
+                                {% if house.posted_by.is_verified_student %}
+                                <span class="badge" style="background:#e0f2fe; color:#0284c7;"><i class="ph-fill ph-student"></i> Verified Student</span>
+                                {% else %}
+                                <span class="badge" style="background:#FEF3C7; color:#B45309;">Unverified User</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <!-- Empty State -->
+            <div style="text-align:center; padding:40px 20px;">
+                <div style="background:#f0f9ff; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; color:var(--primary);">
+                    <i class="ph ph-house-line" style="font-size:2rem;"></i>
+                </div>
+                <h3 style="margin-bottom:8px;">No listings yet around your campus</h3>
+                <p style="margin-bottom:20px;">Be the first to post and help others find a place!</p>
+                <a href="{% url 'post' %}" class="btn btn-primary">Post Listing</a>
+            </div>
+            {% endfor %}
+
+        </div>
+        
+        <!-- View More Button -->
+        <div style="margin-top:30px; text-align:center;" id="view-more-container">
+            <a href="{% url 'houses' %}" class="btn btn-secondary btn-block" id="view-more-btn">View more listings</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    function filterFeed(type, btn) {
+        // Reset all filter chips to default style (Inactive)
+        document.querySelectorAll('.home-filter-chip').forEach(t => {
+            t.style.background = 'white';
+            t.style.color = 'var(--text-muted)'; 
+            t.style.borderColor = 'var(--border-color)';
+        });
+
+        // Set active style for clicked button (Active)
+        btn.style.background = 'var(--primary)';
+        btn.style.color = 'white';
+        btn.style.borderColor = 'var(--primary)';
+
+        // Filter cards
+        const cards = document.querySelectorAll('.card-link');
+        let count = 0;
+        
+        cards.forEach(card => {
+            if (type === 'all' || card.dataset.type === type) {
+                card.style.display = 'block';
+                count++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Update View More Link based on filter
+        const viewMoreBtn = document.getElementById('view-more-btn');
+        if(type === 'house') {
+            viewMoreBtn.href = "{% url 'houses' %}";
+            viewMoreBtn.textContent = "View more houses";
+        } else if (type === 'roommate') {
+            viewMoreBtn.href = "{% url 'roommates' %}";
+            viewMoreBtn.textContent = "View more roommates";
+        } else {
+            viewMoreBtn.href = "{% url 'houses' %}";
+            viewMoreBtn.textContent = "View more listings";
+        }
+    }
+</script>
+{% endblock %}
